@@ -1,0 +1,27 @@
+﻿@using konym.live.Components
+
+<!DOCTYPE HTML>
+
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>konym.live</title>
+    <link rel="stylesheet" type="text/css" href="style/body.css">
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+    <HtmxInclude/>
+</head>
+
+<body>
+    <UserBadge/>
+
+    <div class="flex-horiz">
+        <Navbar/>
+        @Content
+    </div>
+</body>
+</html>
+
+@code
+{
+    [Parameter] public RenderFragment Content { get; set; }
+}

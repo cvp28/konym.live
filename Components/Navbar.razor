@@ -1,0 +1,73 @@
+﻿<div class=nav>
+
+    <img src="images/favicon.ico" id="navlogo">
+
+    <h3 align="center">Navigation</h3>
+
+    <div id="navlist">
+		<a class="navlink" href="/">Home</a>
+		<a class="navlink" href="/about">About</a>
+        <a class="navlink" href="/download">Download</a>
+    </div>
+
+	<style>
+		.nav {
+			text-align:center;
+			background-color:#292929;
+			overflow:auto;
+			height: 100vh;
+			width: 11vw;
+		}
+
+		#navlogo {
+			border-radius:50%;
+			width:75%;
+		}
+
+		#navlist {
+			margin:10px;
+			padding:0;
+		}
+
+		.navlink {
+			padding: 5px;
+			color: burlywood;
+			background-color: black;
+			border: 1px solid white;
+			font-weight: bold;
+			text-decoration: none;
+			height: 20px;
+			display: block;
+			text-align: center;
+		}
+
+		.active {
+			
+		}
+
+		.navlink:hover {
+			color: black;
+			background-color: burlywood;
+			text-decoration: wavy;
+		}
+	</style>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			// Get the current page's URL
+			const currentUrl = window.location.href;
+
+			// Select all anchor tags within the navbar
+			const navLinks = document.querySelectorAll("#navlist a");
+
+			// Loop through the links and add the 'active' class to the matching one
+			navLinks.forEach(link => {
+				if (link.href === currentUrl) {
+					link.classList.add('active');
+
+					link.innerHTML = '> ' + link.innerHTML + ' <';
+				}
+			});
+		});
+	</script>
+</div>

@@ -1,0 +1,69 @@
+/* .content refers to page content (to the right of the navigation bar) */
+
+body {
+  background-image: url("background.jpg");
+  color: white;
+  margin: 0px;
+}
+
+.flex-horiz
+{
+	display: flex;
+	flex-direction: row;
+}
+
+.flex-vert
+{
+	display: flex;
+	flex-direction: column;
+}
+
+.flex-justify-center
+{
+	justify-content: center;
+}
+
+.flex-align-center
+{
+	align-items: center;
+}
+
+.fill-width
+{
+	width: stretch;
+}
+
+.content {
+	flex:1;
+}
+
+.news-item {
+	color: burlywood;
+	background-color: black;
+	border: 1px solid white;
+
+	width: fit-content;
+	max-width: 35%;
+
+	padding: 0px 10px 0px 10px;
+}
+
+#aboutspecifications {
+	width: 30%;
+	text-align: center;
+	color: burlywood;
+	background-color: black;
+	border: 1px solid white;
+	padding: 5px;
+}
+
+#software {
+  float:left;
+  margin-left:30px;
+}
+
+#fullsoftwaretable td {
+  padding:3px;
+  text-align:center;
+}
+
