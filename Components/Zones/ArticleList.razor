@@ -1,7 +1,9 @@
 ﻿
 @foreach (var Topic in Topics)
 {
-	<a	class="zone-btn glowing-btn fill-width flex-vert flex-justify-center"
+	var index = Topics.IndexOf(Topic);
+
+	<a	class="zone-btn glowing-btn fill-width flex-horiz flex-align-center"
 
 		hx-trigger="click"
 		hx-get="/zones/@ZoneName.ToLower()"
@@ -11,10 +13,31 @@
 		hx-swap="innerHTML"
 
 		hx-push-url="/zones/@ZoneName.ToLower()?date=@Topic.Date"
+		hx-indicator="find #topic-indicator"
 	>
-		@Topic.Title<br />@Topic.Date
+		<div>
+			@Topic.Title<br />@Topic.Date
+		</div>
+
+		<div>
+			<img id="topic-indicator" style="max-width: 50px;" src="https://imgs.search.brave.com/_zQYZfSLOQKexVlbZ0AoVGmPuvxrURdEIIGGzv3_WgA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS50ZW5vci5jb20v/VUltUUtrWUVOQmdB/QUFBTS9jb25mdXNl/ZC1maWRnZXQtc3Bp/bm5lci1maWRnZXQt/c3Bpbm5lci5naWY.gif" />
+		</div>
 	</a>
+
+	<style>
+		#topic-indicator {
+			max-width: 5cqi;
+			opacity: 0;
+
+			transition: 0.5s ease opacity
+		}
+
+		#topic-indicator.htmx-request {
+			opacity: 1;
+		}
+	</style>
 }
+
 
 @code {
 	[Parameter]
