@@ -8,8 +8,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\images\imadethis.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Htmx" Version="1.10.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.3" />
+    <PackageReference Include="Markdig" Version="1.1.1" />
+    <PackageReference Include="Spectre.Console" Version="0.54.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ServerContent\life-topics\tbd_03-09-2026.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ServerContent\tech-topics\Bigger Updates!_03-23-2026.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ServerContent\tech-topics\Updates!_03-14-2026.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ServerContent\tech-topics\Introduction_03-08-2026.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

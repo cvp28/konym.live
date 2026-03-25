@@ -1,0 +1,24 @@
+﻿
+<div id="zone-topics" class="flex-vert fill-width fill-height">
+
+    @if (HasArticle)    { <ArticleView TopicHtml="@TopicHtml" ZoneName="@ZoneName" /> }
+    else                { <ArticleList Topics="@APIUtils.GetTopics(ZoneName)" ZoneName="@ZoneName"/> }
+
+</div>
+
+<style>
+    #zone-topics {
+        gap: 10px;
+        overflow-y: scroll;
+        scrollbar-width: none;
+    }
+</style>
+
+
+
+@code {
+    [Parameter] public string ZoneName { get; set; }
+
+    [Parameter] public bool HasArticle { get; set; }
+    [Parameter] public MarkupString TopicHtml { get; set; }
+}

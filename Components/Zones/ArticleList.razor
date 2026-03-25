@@ -1,0 +1,25 @@
+﻿
+@foreach (var Topic in Topics)
+{
+	<a	class="zone-btn glowing-btn fill-width flex-vert flex-justify-center"
+
+		hx-trigger="click"
+		hx-get="/zones/@ZoneName.ToLower()"
+		hx-vals='{"date": "@Topic.Date"}'
+
+		hx-target="#zone-topics"
+		hx-swap="innerHTML"
+
+		hx-push-url="/zones/@ZoneName.ToLower()?date=@Topic.Date"
+	>
+		@Topic.Title<br />@Topic.Date
+	</a>
+}
+
+@code {
+	[Parameter]
+	public List<(string Title, string Date)> Topics { get; set; }
+
+	[Parameter]
+	public string ZoneName { get; set; }
+}

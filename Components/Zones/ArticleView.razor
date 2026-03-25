@@ -1,0 +1,20 @@
+﻿<a class="zone-btn glowing-btn flex-vert flex-justify-center flex-align-center" style="height: max-content;" href="@ReturnURL">Back to Topics</a>
+
+<div id="topic-content" style="text-align: left; font-family: Arial, Helvetica, sans-serif; font-size: 1cqi; line-height: 150%;">
+	@TopicHtml
+</div>
+
+@code {
+	[Parameter]
+	public MarkupString TopicHtml { get; set; }
+
+	[Parameter] public string ZoneName { get; set; }
+
+	private string ReturnURL => ZoneName switch
+	{
+		"technology" => "/zones/technology",
+		"life" => "/zones/life",
+		"cars-and-bikes" => "/zones/cars-and-bikes",
+		_ => ""
+	};
+}

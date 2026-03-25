@@ -1,0 +1,26 @@
+﻿
+<div class="content flex-vert flex-justify-center flex-align-center">
+    <a target="_blank" href="https://www.google.com" class="glowing-btn">Glowing button!</a>
+</div>
+
+<style>
+    .glowing-btn {
+        /* Basic styling */
+        padding: 10px;
+        font-weight: bold;
+        color: burlywood;
+        cursor: pointer;
+        background: black;
+
+        border: 2px solid transparent;
+        /* Gradient and shadow properties */
+        border-image: linear-gradient(190deg,rgba(0, 65, 115, 1), rgba(196, 177, 0, 1)) 1; /* Initial gradient */
+        box-shadow: 0 0 15px rgba(0, 65, 115, 0.5); /* Initial subtle glow */
+        /* Transition for smooth effect */
+        transition: all 0.3s ease-in-out;
+    }
+
+    .glowing-btn:hover {
+        box-shadow: 0 0 50px rgba(33, 147, 176, 0.6), 0 0 15px rgba(196, 177, 0, 1)
+    }
+</style>

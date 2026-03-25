@@ -6,14 +6,28 @@
 <head>
     <meta charset="UTF-8" />
     <title>konym.live</title>
-    <link rel="stylesheet" type="text/css" href="style/body.css">
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/style/body.css"/>
+    <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico">
+
+    <!--Prevent blinding FUOC (Flash-of-unstyled-content)-->
+    <style>
+        html { background-color: black; }
+
+        @@font-face {
+            font-family: '3dthirteen';
+            src: url('/fonts/3D-Thirteen-Pixel-Fonts.ttf') format('truetype');
+        }
+
+        @@font-face {
+            font-family: 'PixelPurl';
+			src: url('/fonts/PixelPurl.ttf') format('truetype');
+        }
+    </style>
+    
     <HtmxInclude/>
 </head>
 
-<body>
-    <UserBadge/>
-
+<body hx-boost="true" hx-target=".content" hx-swap="outerHTML">
     <div class="flex-horiz">
         <Navbar/>
         @Content

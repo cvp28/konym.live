@@ -1,59 +1,123 @@
-﻿<div class=nav>
+﻿<div id="nav" class="flex-vert flex-align-center fill-height">
 
-    <img src="images/favicon.ico" id="navlogo">
+	<img id="logo" src="/images/logo.jpg">
 
-    <h3 align="center">Navigation</h3>
+	<a	hx-trigger="click"
+		hx-get="/"
+		hx-push-url="/"
+		hx-target=".content"
+		hx-swap="outerHTML">
+		<span id="navbar-header">konym.live</span>
+	</a>
 
     <div id="navlist">
 		<a class="navlink" href="/">Home</a>
 		<a class="navlink" href="/about">About</a>
-        <a class="navlink" href="/download">Download</a>
+		<a class="navlink" href="/zones">Zones</a>
+        <a class="navlink" href="/i-made-this">I Made This</a>
     </div>
 
+	<div id="button" class="flex-horiz flex-align-center">
+		<a id="button-image" target="_blank" href="https://konym.live" title="To konym.live"><img src="/images/button.png" /></a>
+		<img id="clipboard-image" src="/images/clipboard.png" />
+	</div>
+
+	<div id="userbadge">
+		<UserBadge/>
+	</div>
+
 	<style>
-		.nav {
-			text-align:center;
-			background-color:#292929;
+		#nav {
+			background: linear-gradient(190deg,rgba(0, 65, 115, 0.54) 0%, rgba(196, 177, 0, 0.34) 100%);
+
 			overflow:auto;
 			height: 100vh;
 			width: 11vw;
+
+			padding-top: 10px;
+			padding-bottom: 10px;
+
+			min-width: 100px;
+
+			gap: 1cqi;
+
+			container-type: inline-size;
 		}
 
-		#navlogo {
-			border-radius:50%;
-			width:75%;
+		#logo {
+			width: 80%;
+		}
+
+		#navbar-header {
+			font-family: '3dthirteen';
+			font-size: 19cqi;
+			
+			transition: text-shadow 0.3s ease;
+		}
+
+		#navbar-header:hover {
+			cursor: pointer;
+			text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF;
 		}
 
 		#navlist {
-			margin:10px;
-			padding:0;
+			width: 80%;
 		}
 
 		.navlink {
-			padding: 5px;
 			color: burlywood;
 			background-color: black;
 			border: 1px solid white;
+			border-image: linear-gradient(190deg,rgba(0, 65, 115, 1), rgba(196, 177, 0, 1)) 1;
+
+			text-align: center;
+			font-size: 7cqi;
 			font-weight: bold;
 			text-decoration: none;
-			height: 20px;
+
+			padding: 5px;
+			margin: 5px 0px;
+
 			display: block;
-			text-align: center;
+		}
+
+		#button {
+			flex-wrap: wrap;
+			gap: 5px;
+		}
+
+		#button-image {
+			width: 88px;
+			height: 31px;
+		}
+
+		#clipboard-image {
+			height: 31px;
+		}
+
+		#clipboard-image:hover {
+			cursor: pointer;
+		}
+
+		#userbadge {
+			align-content: flex-end;
+			flex-grow: 1;
+			margin-bottom: 20px;
 		}
 
 		.active {
-			
+			text-decoration: underline;
 		}
 
 		.navlink:hover {
-			color: black;
-			background-color: burlywood;
-			text-decoration: wavy;
+			background: transparent;
+			border: 1px solid white;
+			/*border-image: linear-gradient(90deg,rgba(0, 65, 115, 0.54), rgba(0, 0, 0, 1), rgba(196, 177, 0, 0.34)) 1;*/
 		}
 	</style>
 
 	<script>
-		document.addEventListener("DOMContentLoaded", function() {
+		document.body.addEventListener("htmx:afterSwap", function() {
 			// Get the current page's URL
 			const currentUrl = window.location.href;
 
@@ -61,13 +125,22 @@
 			const navLinks = document.querySelectorAll("#navlist a");
 
 			// Loop through the links and add the 'active' class to the matching one
-			navLinks.forEach(link => {
-				if (link.href === currentUrl) {
+			navLinks.forEach(link =>
+			{
+				if (link.href === currentUrl)
 					link.classList.add('active');
+				else
+					link.classList.remove('active');
 
-					link.innerHTML = '> ' + link.innerHTML + ' <';
-				}
 			});
+
+			const clipboard = document.getElementById("clipboard-image");
+
+			clipboard.onclick = async function(event)
+			{
+				await navigator.clipboard.writeText(`<a target="_blank" href="https://konym.live" title="To konym.live"><img style="width: 88px; height: 31px" src="https://konym.live/images/button.png" /></a>`);
+				alert("Copied button html!");
+			};
 		});
 	</script>
 </div>

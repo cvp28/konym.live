@@ -1,12 +1,12 @@
-﻿<div class="content flex-vert flex-align-center" align="center">
+﻿<div class="content flex-vert flex-align-center">
 
     <div class="fill-width">
-        <h1>About</h1>
+        <span style="font-family: '3dthirteen'; font-size: 5cqi;">About</span>
         <hr />
     </div>
 
-    <p align="center">
-        I was inspired to start this side-project by the YouTuber <a target="_blank" style="color:lightgreen" href="https://www.youtube.com/@@onionboots">onionboots</a>.<br />
+    <p id="about-text">
+        I was inspired to start this side-project by the YouTuber <a target="_blank" style="color: lightgreen" href="https://www.youtube.com/@@onionboots">onionboots</a>.<br />
         His "web revival" video, dated 2/19/2026, was pretty illuminating. It reminded me of an internet that I vaguely knew when I was younger and not so social-media addicted.<br />
         <br />
         Being a bit of a computer nerd, I figured it prudent to fill my free-time with the development of my own website in the "indie web" style onionboots so convincingly sold.<br />
@@ -17,12 +17,47 @@
         - Konym
     </p>
 
-    <div id="aboutspecifications">
-        <h3 align="center">Page Specifications</h3>
-        <p>
-            Project begin: February 2026<br />
-            Latest page update: 02-23-2026 ~11 PM<br />
-            What I'm working on: General website layout and content updates<br />
-        </p>
+    <div id="page-specifications" class="news-item flex-vert">
+        <span class="fill-width" id="page-specifications-header">Page Specifications</span>
+
+        <div id="page-specifications-content" class="flex-horiz">
+            <span style="text-align: left;">
+                Project Begin:<br />
+                Latest Update:<br />
+                Latest Task:
+            </span>
+
+            <span style="text-align: left;">
+                Feburary 2026<br />
+                03-24-2026 ~11PM PST<br />
+                Floundering & hair ripping
+            </span>
+        </div>
     </div>
+
+    <style>
+        .content {
+            text-align: center;
+        }
+
+        #about-text {
+            font-size: 1cqi;
+        }
+
+        #page-specifications {
+            padding: 5px 30px;
+            gap: 10px;
+        }
+
+        #page-specifications-header {
+            font-family: '3dthirteen';
+            font-size: 2.5cqi;
+        }
+
+        #page-specifications-content {
+            font-size: 1cqi;
+            margin: 0px;
+            gap: 30px;
+        }
+    </style>
 </div>

@@ -1,23 +1,25 @@
 ﻿<div
     id="active-users"
     draggable="true"
-    style="cursor: grab; position: absolute; left: 11.1%; top: 5px;"
-
-    hx-get="/active-users"
+    
+    hx-post="/frag/active-users"
     hx-trigger="load, every 5s [document.hidden === false]"
 
-    hx-target=".badge"
+    hx-target="#badge"
     hx-swap="outerHTML"
     >
 
-
-    <span class="badge">🌎 Getting user count...</span>
-    <!--<span hx-get="/active-users-string" hx-swap="innerHTML" hx-trigger="load delay:1s, every 5s [document.hidden === false]" class="badge">🌎 Getting user count...</span>-->
+    <span id="badge">🌎 Getting user count...</span>
 
     <style>
-        .badge {
+        #active-users {
+            cursor: grab;
             padding: 5px;
-            border: 2px dashed rgb(0, 255, 0);
+            border: 2px dashed rgb(0,255, 0);
+            container-type: inline-size;
+            font-size: 7.5cqi;
+            min-width: 85cqi;
+            z-index: 999;
         }
     </style>
 
@@ -25,35 +27,29 @@
         let offsetX, offsetY;
         const element = document.getElementById('active-users');
 
-        //  const bodyElem = document.getElementsByName('body')[0];
-        //  bodyElem.addEventListener('dragover', (e) =>
-        //  {
-        //      e.preventDefault();
-        //  });
+        document.body.addEventListener("dragover", (event) =>
+        {
+            event.preventDefault();
+        });
+
+        document.body.addEventListener("dragenter", (event) =>
+        {
+            event.preventDefault();
+        });
 
         element.addEventListener('dragstart', (event) =>
         {
-            const img = new Image();
-            img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-
-            // Set the drag image to the transparent image
-            event.dataTransfer.setDragImage(img, 0, 0);
-            
             offsetX = event.clientX - element.getBoundingClientRect().left;
             offsetY = event.clientY - element.getBoundingClientRect().top;
 
-            event.target.style.cursor = 'move';
-            event.target.style.opacity = '0.4';
-
-            return false;
-        });
-
-        element.addEventListener('drag', (event) =>
-        {
-            //event.target.style.cursor = 'move';
-
             event.target.style.left = `${event.clientX - offsetX}px`;
             event.target.style.top = `${event.clientY - offsetY}px`;
+            event.target.style.position = "absolute";
+            event.target.style.opacity = '0.4';
+
+            event.target.style.cursor = 'grab';
+
+            return false;
         });
 
         element.addEventListener('dragend', (event) =>
@@ -63,6 +59,14 @@
 
             event.target.style.left = `${event.clientX - offsetX}px`;
             event.target.style.top = `${event.clientY - offsetY}px`;
+        });
+
+        element.addEventListener('dblclick', (event) =>
+        {
+            element.style.position = "";
+            element.style.left = "";
+            element.style.top = "";
+            element.style.marginTop = "10px";
         });
     </script>
 

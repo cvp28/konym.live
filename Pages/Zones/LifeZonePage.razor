@@ -1,0 +1,68 @@
+﻿<div class="content flex-vert flex-align-center" align="center">
+
+    <div class="fill-width flex-horiz">
+        <span class="fill-width" style="font-family: '3dthirteen'; font-size: 5cqi;">Life Zone</span>
+    </div>
+
+    <div class="fill-width">
+        <hr />
+    </div>
+
+    <div id="zone-root" class="flex-vert fill-width fill-height">
+        <a class="zone-btn glowing-btn flex-horiz flex-justify-center flex-align-center" style="height: max-content;" href="/zones">Back to Zones</a>
+        @ZoneRootContent
+    </div>
+
+    <style>
+        #zone-root {
+            padding: 10px;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        #zone-sidebar {
+            width: 20vw;
+            color: burlywood;
+            background-color: black;
+            padding: 1%;
+            text-align: left;
+            border: 2px solid transparent;
+            border-image: linear-gradient(190deg,rgba(0, 65, 115, 1), rgba(196, 177, 0, 1)) 1;
+        }
+
+        .zone-btn {
+            cursor: pointer;
+            padding: 0px 30px;
+            width: stretch;
+            height: 15vh;
+            color: burlywood;
+            background: black;
+            text-decoration: none;
+            text-align: left;
+            border: 2px solid transparent;
+            border-image: linear-gradient(190deg,rgba(0, 65, 115, 1), rgba(196, 177, 0, 1)) 1;
+            font-size: 3cqi;
+            font-weight: 100;
+            font-family: 'PixelPurl';
+        }
+
+        .glowing-btn {
+            background-color: rgba(0, 0, 0, 1.0);
+            background-blend-mode: darken;
+            box-shadow: 0 0 15px rgba(0, 65, 115, 0.5);
+            /* Transition for smooth effect */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, height 0.3s ease;
+        }
+
+        .glowing-btn:hover {
+            backdrop-filter: blur(500px);
+            font-weight: 900;
+            background-color: rgba(0, 0, 0, 0.0);
+            box-shadow: 0 0 80px rgba(33, 147, 176, 0.8), 0 0 50px rgba(196, 177, 0, 1);
+        }
+    </style>
+</div>
+
+@code {
+    [Parameter] public RenderFragment ZoneRootContent { get; set; }
+}

@@ -4,6 +4,7 @@ body {
   background-image: url("background.jpg");
   color: white;
   margin: 0px;
+  overflow: hidden;
 }
 
 .flex-horiz
@@ -33,28 +34,38 @@ body {
 	width: stretch;
 }
 
+.fill-height
+{
+	height: stretch;
+}
+
 .content {
-	flex:1;
+	flex: 1;
+	max-height: 100vh;
+	max-width: 100vw;
+	overflow: auto;
+	container-type: inline-size;
+}
+
+#introduction {
+	font-size: 1cqi;
 }
 
 .news-item {
 	color: burlywood;
 	background-color: black;
-	border: 1px solid white;
-
-	width: fit-content;
-	max-width: 35%;
-
-	padding: 0px 10px 0px 10px;
+	border: 2px solid white;
+	border-image: linear-gradient(190deg, rgba(0, 65, 115, 0.5), rgba(196, 177, 0, 0.5)) 1;
+	padding: 5px 10px;
 }
 
-#aboutspecifications {
-	width: 30%;
-	text-align: center;
-	color: burlywood;
-	background-color: black;
-	border: 1px solid white;
-	padding: 5px;
+.news-item-date {
+	font-family: '3dthirteen';
+	font-size: 3cqi;
+}
+
+.news-item-content {
+	font-size: 1cqi;
 }
 
 #software {

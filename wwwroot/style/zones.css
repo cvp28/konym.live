@@ -1,0 +1,120 @@
+#zone-topics {
+    gap: 10px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+#zone-root {
+    padding: 10px;
+    gap: 10px;
+    overflow: hidden;
+}
+
+#zone-sidebar {
+    width: 20vw;
+    color: burlywood;
+    background-color: black;
+    padding: 1%;
+    text-align: left;
+    border: 2px solid transparent;
+    border-image: linear-gradient(190deg,rgba(0, 65, 115, 1), rgba(196, 177, 0, 1)) 1;
+}
+
+.topic-btn {
+    cursor: pointer;
+    padding: 0px 30px;
+    width: stretch;
+    height: 15vh;
+    color: burlywood;
+    background: black;
+    text-decoration: none;
+    text-align: left;
+    border: 2px solid transparent;
+    border-image: linear-gradient(190deg,rgba(0, 65, 115, 1), rgba(196, 177, 0, 1)) 1;
+    font-size: 3cqi;
+    font-weight: 100;
+    font-family: 'PixelPurl';
+}
+
+.topic-glowing-btn {
+    background-color: rgba(0, 0, 0, 1.0);
+    background-blend-mode: darken;
+    box-shadow: 0 0 15px rgba(0, 65, 115, 0.5);
+    /* Transition for smooth effect */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.topic-glowing-btn:hover {
+    backdrop-filter: blur(500px);
+    font-weight: 900;
+    background-color: rgba(0, 0, 0, 0.0);
+    box-shadow: 0 0 80px rgba(33, 147, 176, 0.8), 0 0 50px rgba(196, 177, 0, 1);
+}
+
+#zones-container {
+    gap: 2px;
+    padding: 10px 20px 20px 20px;
+}
+
+#technology-btn {
+    background-image: url(/images/vista_wallpaper.webp);
+    background-position-x: 30%;
+    background-size: cover;
+}
+
+#life-btn {
+    background-image: url(/images/lake_perris.jpg);
+    background-position-x: 60%;
+    background-position-y: 80%;
+    background-size: cover;
+}
+
+#cars-and-bikes-btn {
+    background-image: url(/images/ktm_pink_tree.jpg);
+    background-repeat: no-repeat;
+    background-position-x: 60%;
+    background-position-y: 80%;
+    background-size: cover;
+}
+
+.zone-btn {
+    cursor: pointer;
+    padding: 10px;
+
+    width: stretch;
+    height: stretch;
+
+    color: burlywood;
+    background:black;
+
+    text-decoration: none;
+
+    border: 2px solid transparent;
+    border-image: linear-gradient(190deg,rgba(0, 65, 115, 1), rgba(196, 177, 0, 1)) 1;
+
+    font-size: 4cqi;
+    font-weight: 100;
+    font-family: '3dthirteen';
+}
+
+.glowing-btn {
+
+    background-color: rgba(0, 0, 0, 0.5);
+    background-blend-mode: darken;
+
+    box-shadow: 0 0 15px rgba(0, 65, 115, 0.5);
+    width: 100%;
+
+    /* Transition for smooth effect */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, width 0.3s ease;
+}
+
+.glowing-btn:hover {
+    backdrop-filter: blur(500px);
+    font-weight: 900;
+
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0);
+    box-shadow: 0 0 80px rgba(33, 147, 176, 0.8), 0 0 50px rgba(196, 177, 0, 1);
+    width: 200%;
+}

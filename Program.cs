@@ -1,12 +1,13 @@
-using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Net;
-
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.HttpOverrides;
 
+using Spectre.Console;
+
+using konym.live;
 using konym.live.Pages;
-using Microsoft.AspNetCore.Components;
+using konym.live.Pages.Zones;
+using konym.live.Pages.Testing;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
@@ -20,85 +21,84 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 	options.KnownIPNetworks.Clear();
 	options.KnownProxies.Clear();
 });
-
 var app = builder.Build();
 
 app.UseAntiforgery();
 app.MapStaticAssets();
 app.UseForwardedHeaders();
 
-// Active Users endpoint
-// Returns simple string
-app.MapGet("/active-users", (HttpContext ctx, ConcurrentBag<User> UserList) =>
+app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList) =>
 {
-	PingActive(ctx.Connection.RemoteIpAddress, ctx.Request.Path, UserList, SetWhere: false);
-	var UserCount = UserList.Count(user => user.Valid);
+	PingActive(ctx.Connection.RemoteIpAddress, ctx.Request.Headers, UserList);
 
-	return $"""<span class="badge">🌎 {(UserCount > 1 ? $"{UserCount} visits" : $"{UserCount} visit")}, {UserList.Count(user => Stopwatch.GetElapsedTime(user.LastPing).Seconds < 30)} online now!</span>""";
+	AnsiConsole.Clear();
+	AnsiConsole.WriteLine("/frag/active-users\n");
+
+	var table = new Table();
+	table.AddColumns("Status", "IP Address", "Country", "URL", "Last Ping", "Valid");
+
+	var TotalVisits = UserList.Count(user => user.Valid);
+	var ActiveUsers = UserList.Where(user => user.Active);
+	var InactiveUsers = UserList.Where(user => !user.Active);
+
+	foreach (var user in ActiveUsers)
+		table.AddRow(
+			"[green]ACTIVE[/]",
+			user.IP.ToString(),
+			user.Country,
+			user.Where,
+			$"{user.LastPing.ToShortDateString()} {user.LastPing.ToShortTimeString()}",
+			user.Valid.ToString()
+		);
+
+	foreach (var user in InactiveUsers)
+		table.AddRow(
+			"[red]INACTIVE[/]",
+			user.IP.ToString(),
+			user.Country,
+			user.Where,
+			$"{user.LastPing.ToShortDateString()} {user.LastPing.ToShortTimeString()}",
+			user.Valid.ToString()
+		);
+
+	AnsiConsole.Write(table);
+
+	return $"""<span id="badge">🌎 {(TotalVisits > 1 ? $"{TotalVisits} visits" : $"{TotalVisits} visit")}, {ActiveUsers.Count()} online now!</span>""";
 });
 
-// Pages
-app.MapGet("/", (HttpContext ctx, ConcurrentBag<User> UserList) =>
-{
-	PingActive(ctx.Connection.RemoteIpAddress, ctx.Request.Path, UserList);
+// Simple pages
+app.MapGet("/", APIUtils.DefaultPartialOrFullHandler<IndexPage>);
+app.MapGet("/about", APIUtils.DefaultPartialOrFullHandler<AboutPage>);
+app.MapGet("/zones", APIUtils.DefaultPartialOrFullHandler<ZonesPage>);
+app.MapGet("/i-made-this", APIUtils.DefaultPartialOrFullHandler<IMadeThisPage>);
 
-	RenderFragment Index = builder =>
-	{
-		builder.OpenComponent<IndexPage>(0);
-		builder.CloseComponent();
-	};
+// Hidden pages
+app.MapGet("/test-page", APIUtils.DefaultPartialOrFullHandler<TestPage>);
+app.MapGet("/nothing-yet", APIUtils.DefaultPartialOrFullHandler<NothingYetPage>);
 
-	return new RazorComponentResult<MainLayout>(new { Content = Index });
-});
-
-app.MapGet("/about", (HttpContext ctx, ConcurrentBag<User> UserList) =>
-{
-	PingActive(ctx.Connection.RemoteIpAddress, ctx.Request.Path, UserList);
-
-	RenderFragment About = builder =>
-	{
-		builder.OpenComponent<AboutPage>(0);
-		builder.CloseComponent();
-	};
-
-	return new RazorComponentResult<MainLayout>(new { Content = About });
-});
-
-app.MapGet("/download", (HttpContext ctx, ConcurrentBag<User> UserList) =>
-{
-	PingActive(ctx.Connection.RemoteIpAddress, ctx.Request.Path, UserList);
-
-	RenderFragment Download = builder =>
-	{
-		builder.OpenComponent<DownloadPage>(0);
-		builder.CloseComponent();
-	};
-
-	return new RazorComponentResult<MainLayout>(new { Content = Download });
-});
-
+// Complicated pages
+app.MapGet("/zones/technology", APIUtils.ZoneHandler<TechnologyZonePage>);
+app.MapGet("/zones/life", APIUtils.ZoneHandler<LifeZonePage>);
+app.MapGet("/zones/cars-and-bikes", APIUtils.ZoneHandler<CarsAndBikesZonePage>);
 
 app.Run();
 
-static async void PingActive(IPAddress RemoteAddress, string Path, ConcurrentBag<User> ActiveUsers, bool SetWhere = true)
+static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers, ConcurrentBag<User> ActiveUsers)
 {
 	var TryUser = ActiveUsers.FirstOrDefault(user => user.IP.Equals(RemoteAddress));
 
 	if (TryUser is null)
 	{
-		// get country using ip-api
 		using HttpClient client = new HttpClient();
-		var Country = await client.GetStringAsync($"http://ip-api.com/csv/{RemoteAddress}?fields=1", CancellationToken.None);
-
-		Console.WriteLine($"{RemoteAddress} :: {Country}");
+		string Country = Headers.TryGetValue("CF-IPCountry", out var country) ? country : "<unknown>";
 
 		// Add new visit to the tracker
 		var visit = new User
 		{
 			IP = RemoteAddress,
 			Country = Country,
-			Where = Path,
-			LastPing = Stopwatch.GetTimestamp(),
+			Where = Headers.TryGetValue("Hx-Current-Url", out var where) ? where : "/",
+			LastPing = DateTime.Now,
 
 			// Don't consider this visit valid until the user has pinged at least once, to avoid counting bots and scrapers
 			Valid = false
@@ -108,14 +108,9 @@ static async void PingActive(IPAddress RemoteAddress, string Path, ConcurrentBag
 	}
 	else
 	{
-		TryUser.LastPing = Stopwatch.GetTimestamp();
+		TryUser.LastPing = DateTime.Now;
 		TryUser.Valid = true;
-
-		// Avoids setting user's location to a backend API endpoint
-		if (SetWhere)
-			TryUser.Where = Path;
-
-		Console.WriteLine($"{TryUser.IP} :: Alive as of {TryUser.LastPing} at {TryUser.Where}");
+		TryUser.Where = Headers.TryGetValue("Hx-Current-Url", out var where) ? where : "/";
 	}
 }
 
@@ -124,27 +119,8 @@ public class User
 	public IPAddress IP;
 	public string Country;
 	public string Where;
-	public long LastPing;
+	public DateTime LastPing;
 	public bool Valid;
-}
 
-//	public class ActiveUsersMiddleware
-//	{
-//		private readonly RequestDelegate _next;
-//		public readonly ConcurrentBag<User> ActiveUsers;
-//	
-//		// Inject the singleton service into the constructor
-//		public ActiveUsersMiddleware(RequestDelegate next, ConcurrentBag<User> ActiveUsers)
-//		{
-//			_next = next;
-//			this.ActiveUsers = ActiveUsers;
-//		}
-//	
-//		public async Task InvokeAsync(HttpContext context)
-//		{
-//			
-//	
-//		end:
-//			await _next(context);
-//		}
-//	}
+	public bool Active => Valid && (DateTime.Now - LastPing).TotalSeconds < 30;
+}
