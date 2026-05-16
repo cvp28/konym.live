@@ -21,6 +21,9 @@
     <None Update="ServerContent\life-topics\tbd_03-09-2026.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ServerContent\tech-topics\Shadez 2_05-13-2026.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ServerContent\tech-topics\Bigger Updates!_03-23-2026.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

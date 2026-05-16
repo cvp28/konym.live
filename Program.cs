@@ -8,6 +8,7 @@ using konym.live;
 using konym.live.Pages;
 using konym.live.Pages.Zones;
 using konym.live.Pages.Testing;
+using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
@@ -71,6 +72,7 @@ app.MapGet("/", APIUtils.DefaultPartialOrFullHandler<IndexPage>);
 app.MapGet("/about", APIUtils.DefaultPartialOrFullHandler<AboutPage>);
 app.MapGet("/zones", APIUtils.DefaultPartialOrFullHandler<ZonesPage>);
 app.MapGet("/i-made-this", APIUtils.DefaultPartialOrFullHandler<IMadeThisPage>);
+app.MapGet("/shadez-2-full", APIUtils.DefaultPartialOrFullHandler<Shadez2FullPage>);
 
 // Hidden pages
 app.MapGet("/test-page", APIUtils.DefaultPartialOrFullHandler<TestPage>);
@@ -80,6 +82,8 @@ app.MapGet("/nothing-yet", APIUtils.DefaultPartialOrFullHandler<NothingYetPage>)
 app.MapGet("/zones/technology", APIUtils.ZoneHandler<TechnologyZonePage>);
 app.MapGet("/zones/life", APIUtils.ZoneHandler<LifeZonePage>);
 app.MapGet("/zones/cars-and-bikes", APIUtils.ZoneHandler<CarsAndBikesZonePage>);
+
+Globals.EmbedRefreshTask = Task.Run(Globals.EmbedLinksRefreshProc);
 
 app.Run();
 
@@ -112,6 +116,34 @@ static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers,
 		TryUser.Valid = true;
 		TryUser.Where = Headers.TryGetValue("Hx-Current-Url", out var where) ? where : "/";
 	}
+}
+
+public static class Globals
+{
+	public static ConcurrentBag<string> EmbedLinks = ["https://www.youtube.com/embed/xKuT8f7gSXA"];
+
+	public static Task EmbedRefreshTask;
+
+	public static async void EmbedLinksRefreshProc()
+	{
+		while (true)
+		{
+			var contents = File.ReadAllLines(@".\ServerContent\EmbedLinks.txt");
+
+			EmbedLinks.Clear();
+
+			foreach (var line in contents)
+			{
+				var first = line.Split(',').First();
+
+				if (first.Length > 0)
+					EmbedLinks.Add(first);
+			}
+
+			await Task.Delay(5000);
+		}
+	}
+
 }
 
 public class User

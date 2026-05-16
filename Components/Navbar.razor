@@ -15,11 +15,18 @@
 		<a class="navlink" href="/about">About</a>
 		<a class="navlink" href="/zones">Zones</a>
         <a class="navlink" href="/i-made-this">I Made This</a>
+        <a class="navlink" href="/shadez-2-full">Shadez 2</a>
     </div>
 
 	<div id="button" class="flex-horiz flex-align-center">
 		<a id="button-image" target="_blank" href="https://konym.live" title="To konym.live"><img src="/images/button.png" /></a>
 		<img id="clipboard-image" src="/images/clipboard.png" />
+	</div>
+
+	<span id="void-fill" />
+
+	<div id="random-vid" class="flex-horiz flex-justify-center">
+		<iframe style="width: 90%;" src="@Globals.EmbedLinks.ElementAt((new Random()).Next(Globals.EmbedLinks.Count))" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 	</div>
 
 	<div id="userbadge">
@@ -45,12 +52,12 @@
 		}
 
 		#logo {
-			width: 80%;
+			width: 90%;
 		}
 
 		#navbar-header {
 			font-family: '3dthirteen';
-			font-size: 19cqi;
+			font-size: 20cqi;
 			
 			transition: text-shadow 0.3s ease;
 		}
@@ -61,7 +68,7 @@
 		}
 
 		#navlist {
-			width: 80%;
+			width: 90%;
 		}
 
 		.navlink {
@@ -99,9 +106,16 @@
 			cursor: pointer;
 		}
 
-		#userbadge {
-			align-content: flex-end;
+		#void-fill {
 			flex-grow: 1;
+		}
+
+		#random-vid {
+			justify-self: flex-end;
+		}
+
+		#userbadge {
+			align-items: flex-end;
 			margin-bottom: 20px;
 		}
 

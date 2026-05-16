@@ -47,6 +47,10 @@ body {
 	container-type: inline-size;
 }
 
+#content-introduction {
+	max-width: 75%
+}
+
 #introduction {
 	font-size: 1cqi;
 }
@@ -67,14 +71,3 @@ body {
 .news-item-content {
 	font-size: 1cqi;
 }
-
-#software {
-  float:left;
-  margin-left:30px;
-}
-
-#fullsoftwaretable td {
-  padding:3px;
-  text-align:center;
-}
-
