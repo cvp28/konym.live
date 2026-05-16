@@ -134,7 +134,7 @@ public static class Globals
 
 			foreach (var line in contents)
 			{
-				var first = line.Split(',').First();
+				var first = line.Split('\t').First();
 
 				if (first.Length > 0)
 					EmbedLinks.Add(first);
