@@ -15,21 +15,60 @@
 
         @@font-face {
             font-family: '3dthirteen';
-            src: url('/fonts/3D-Thirteen-Pixel-Fonts.ttf') format('truetype');
+            src: url('/fonts/woff2/3D-Thirteen-Pixel-Fonts.woff2') format('truetype');
         }
 
         @@font-face {
             font-family: 'PixelPurl';
-			src: url('/fonts/PixelPurl.ttf') format('truetype');
+			src: url('/fonts/woff2/PixelPurl.woff2') format('woff2');
+        }
+
+        @@font-face {
+            font-family: 'FutureEarth';
+            src: url('/fonts/woff2/future-earth.woff2') format('woff2');
+        }
+
+        @@font-face {
+			font-family: "Segoe UI";
+			src: url('/fonts/woff2/Segoe UI.woff2') format('woff2');
+        }
+
+        @@font-face {
+			font-family: "Segoe UI";
+			src: url('/fonts/woff2/Segoe UI Bold.woff2') format('woff2');
+            
+            font-weight: 700;
+        }
+
+        @@font-face {
+			font-family: "Segoe UI";
+			src: url('/fonts/woff2/Segoe UI Italic.woff2') format('woff2');
+            
+            font-style: italic;
+        }
+
+        @@font-face {
+			font-family: "Segoe UI";
+			src: url('/fonts/woff2/Segoe UI Bold Italic.woff2') format('woff2');
+            
+            font-weight: 700;
+            font-style: italic;
         }
     </style>
     
     <HtmxInclude/>
 </head>
 
-<body hx-boost="true" hx-target=".content" hx-swap="outerHTML">
+<body hx-boost="true" hx-target="#content" hx-swap="outerHTML" hx-indicator="#content, #global-loading">
+
+    <img id="global-loading" src="images/aero_spinner.gif"/>
+
     <div id="root" class="flex-horiz">
-        <Navbar/>
+        <div id="root-left" class="flex-vert">
+            <UserBadge/>
+
+            <Navbar/>
+        </div>
 
         @Content
     </div>

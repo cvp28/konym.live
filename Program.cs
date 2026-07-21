@@ -1,5 +1,10 @@
 using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Runtime.InteropServices;
+
 using Microsoft.AspNetCore.HttpOverrides;
 
 using Spectre.Console;
@@ -8,7 +13,6 @@ using konym.live;
 using konym.live.Pages;
 using konym.live.Pages.Zones;
 using konym.live.Pages.Testing;
-using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
@@ -25,8 +29,31 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var app = builder.Build();
 
 app.UseAntiforgery();
-app.MapStaticAssets();
 app.UseForwardedHeaders();
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+	FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+	RequestPath = ""
+});
+
+app.MapStaticAssets();
+
+app.MapGet("/bedroom-light-on", (HttpContext ctx) =>
+{
+	using var client = new UdpClient("wiz_bc4853.lan", 38899);
+
+	var bytes = Encoding.UTF8.GetBytes("""{"id":1,"method":"setState","params":{"state":true}}""");
+	client.Send(bytes, bytes.Length);
+});
+
+app.MapGet("/bedroom-light-off", (HttpContext ctx) =>
+{
+	using var client = new UdpClient("wiz_bc4853.lan", 38899);
+
+	var bytes = Encoding.UTF8.GetBytes("""{"id":1,"method":"setState","params":{"state":false}}""");
+	client.Send(bytes, bytes.Length);
+});
 
 app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList) =>
 {
@@ -48,7 +75,7 @@ app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList
 			user.IP.ToString(),
 			user.Country,
 			user.Where,
-			$"{user.LastPing.ToShortDateString()} {user.LastPing.ToShortTimeString()}",
+			$"{user.LastPing:d} {user.LastPing:t}",
 			user.Valid.ToString()
 		);
 
@@ -58,13 +85,36 @@ app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList
 			user.IP.ToString(),
 			user.Country,
 			user.Where,
-			$"{user.LastPing.ToShortDateString()} {user.LastPing.ToShortTimeString()}",
+			$"{user.LastPing:d} {user.LastPing:t}",
 			user.Valid.ToString()
 		);
 
 	AnsiConsole.Write(table);
 
 	return $"""<span id="badge">🌎 {(TotalVisits > 1 ? $"{TotalVisits} visits" : $"{TotalVisits} visit")}, {ActiveUsers.Count()} online now!</span>""";
+});
+
+app.MapGet("/frag/random-song", (HttpContext ctx) =>
+{
+	return
+	$"""
+	<audio controls>
+		<source src="{Globals.Mp3Files.ElementAt(new Random().Next(Globals.Mp3Files.Count)).Replace(@".\wwwroot", "")}" type="audio/mpeg">
+	</audio>
+	""";
+});
+
+app.MapGet("/frag/get-server-power-info", (HttpContext ctx) =>
+{
+	var uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;
+	Kernel32.GetSystemPowerStatus(out var status);
+
+	return
+	$"""
+	{uptime.TotalHours:F0} hours, {uptime.Minutes} minutes, {uptime.Seconds} seconds<br />
+	{(status.BatteryLifePercent != 255 ? $"{status.BatteryLifePercent}%" : "N/A")}<br />
+	{(status.ACLineStatus == 1 ? "Yes" : "No")}
+	""";
 });
 
 // Simple pages
@@ -83,7 +133,7 @@ app.MapGet("/zones/technology", APIUtils.ZoneHandler<TechnologyZonePage>);
 app.MapGet("/zones/life", APIUtils.ZoneHandler<LifeZonePage>);
 app.MapGet("/zones/cars-and-bikes", APIUtils.ZoneHandler<CarsAndBikesZonePage>);
 
-Globals.EmbedRefreshTask = Task.Run(Globals.EmbedLinksRefreshProc);
+Globals.Mp3FilesRefreshTask = Task.Run(Globals.Mp3FilesRefreshProc);
 
 app.Run();
 
@@ -120,25 +170,19 @@ static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers,
 
 public static class Globals
 {
-	public static ConcurrentBag<string> EmbedLinks = ["https://www.youtube.com/embed/xKuT8f7gSXA"];
+	public static ConcurrentBag<string> Mp3Files = [@"mp3\Azumanga Daioh OST 1 - Kono kara noyouni [Fhq4_Yu_-Gc].mp3"];
 
-	public static Task EmbedRefreshTask;
+	public static Task Mp3FilesRefreshTask;
 
-	public static async void EmbedLinksRefreshProc()
+	public static async void Mp3FilesRefreshProc()
 	{
 		while (true)
 		{
-			var contents = File.ReadAllLines(@".\ServerContent\EmbedLinks.txt");
+			Mp3Files.Clear();
+			var files = Directory.GetFiles(@".\wwwroot\mp3\");
 
-			EmbedLinks.Clear();
-
-			foreach (var line in contents)
-			{
-				var first = line.Split('\t').First();
-
-				if (first.Length > 0)
-					EmbedLinks.Add(first);
-			}
+			foreach (var file in files)
+				Mp3Files.Add(file);
 
 			await Task.Delay(5000);
 		}
@@ -155,4 +199,22 @@ public class User
 	public bool Valid;
 
 	public bool Active => Valid && (DateTime.Now - LastPing).TotalSeconds < 30;
+}
+
+public static partial class Kernel32
+{
+	[LibraryImport("kernel32.dll", SetLastError = true)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	public static partial bool GetSystemPowerStatus(out SystemPowerStatus sps);
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct SystemPowerStatus
+	{
+		public byte ACLineStatus;
+		public byte BatteryFlag;
+		public byte BatteryLifePercent;
+		public byte Reserved1;
+		public int BatteryLifeTime;
+		public int BatteryFullLifeTime;
+	}
 }

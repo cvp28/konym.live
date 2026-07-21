@@ -18,39 +18,59 @@
         <a class="navlink" href="/shadez-2-full">Shadez 2</a>
     </div>
 
-	<div id="button" class="flex-horiz flex-align-center">
-		<a id="button-image" target="_blank" href="https://konym.live" title="To konym.live"><img src="/images/button.png" /></a>
-		<img id="clipboard-image" src="/images/clipboard.png" />
-	</div>
+	<a id="button-image" title="Click to copy html">
+		<img src="/images/button.png" />
+	</a>
 
 	<span id="void-fill" />
 
-	<div id="random-vid" class="flex-horiz flex-justify-center">
-		<iframe style="width: 90%;" src="@Globals.EmbedLinks.ElementAt((new Random()).Next(Globals.EmbedLinks.Count))" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-	</div>
+	<button
+		id="random-vid-refresh"
+		class="navlink"
+		style="width: stretch; cursor: pointer;"
+		
+		hx-indicator="#none"
 
-	<div id="userbadge">
-		<UserBadge/>
+		hx-get="/frag/random-song"
+		hx-target="#random-song"
+		hx-swap="innerHTML"
+	>New Random Song</button>
+
+	<div id="random-song" class="flex-horiz flex-justify-center"
+	
+		hx-get="/frag/random-song"
+		hx-target="this"
+		hx-swap="innerHTML">
+
+		<audio controls>
+			<source src="@Globals.Mp3Files.ElementAt(new Random().Next(Globals.Mp3Files.Count)).Replace(@".\wwwroot", "")" type="audio/mpeg">
+		</audio>
+
 	</div>
 
 	<style>
+		#random-song {
+			width: 105cqi;
+		}
+
 		#nav {
-			border: 2px solid burlywood;
+			border: 2px solid rgba(196, 255, 0, 0.5);
 			background: linear-gradient(190deg,rgba(0, 65, 115, 0.54) 0%, rgba(196, 177, 0, 0.34) 100%);
 			
+			font-family: 'Segoe UI';
+
 			container-type: inline-size;
-			overflow: auto;
 
-			flex: 1;
-			gap: 1cqi;
+			flex: 4;
+			gap: 0.5cqi;
 
-			min-width: 100px;
-			max-width: 11vw;
+			min-width: 11cqi;
+
+			padding: 20px;
 		}
 
 		#logo {
-			margin-top: 20px;
-			width: 90%;
+			width: stretch;
 		}
 
 		#navbar-header {
@@ -66,7 +86,7 @@
 		}
 
 		#navlist {
-			width: 90%;
+			width: stretch;
 		}
 
 		.navlink {
@@ -86,35 +106,17 @@
 			display: block;
 		}
 
-		#button {
-			flex-wrap: wrap;
-			gap: 5px;
-		}
-
 		#button-image {
 			width: 88px;
 			height: 31px;
 		}
 
-		#clipboard-image {
-			height: 31px;
-		}
-
-		#clipboard-image:hover {
+		#button-image:hover {
 			cursor: pointer;
 		}
 
 		#void-fill {
 			flex-grow: 1;
-		}
-
-		#random-vid {
-			justify-self: flex-end;
-		}
-
-		#userbadge {
-			align-items: flex-end;
-			margin-bottom: 20px;
 		}
 
 		.active {
@@ -146,7 +148,7 @@
 
 			});
 
-			const clipboard = document.getElementById("clipboard-image");
+			const clipboard = document.getElementById("button-image");
 
 			clipboard.onclick = async function(event)
 			{

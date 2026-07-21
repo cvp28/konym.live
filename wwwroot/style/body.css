@@ -1,10 +1,38 @@
-/* .content refers to page content (to the right of the navigation bar) */
+/* #content refers to page content (to the right of the navigation bar) */
 
 #root {
-	gap: 20px;
+	gap: 10px;
 	margin: 20px;
 
 	flex-grow: 1;
+}
+
+#root-left {
+	gap: 10px;
+}
+
+#global-loading {
+	visibility: hidden;
+	opacity: 0;
+
+	max-height: 2cqi;
+
+	align-items: center;
+	justify-items: center;
+
+	z-index: 998;
+
+	position: absolute;
+	left: 56%;
+	top: 45%;
+
+	transition: opacity 200ms ease-in;
+}
+
+#global-loading.htmx-request {
+	visibility: visible;
+	opacity: 1;
+	transition: opacity 200ms ease-in;
 }
 
 body {
@@ -18,6 +46,22 @@ body {
 
 	margin: 0;
 
+}
+
+#content {
+	border: 2px solid cadetblue;
+	background-image: url("background.jpg");
+	font-family: 'Segoe UI';
+	flex: 8;
+	overflow: auto;
+	container-type: inline-size;
+
+	transition: opacity 200ms ease-in;
+}
+
+#content.htmx-request {
+	opacity: 50%;
+	transition: opacity 200ms ease-in;
 }
 
 .flex-horiz
@@ -52,21 +96,8 @@ body {
 	height: stretch;
 }
 
-.content {
-	border: 2px solid burlywood;
-	background-image: url("background.jpg");
-
-	flex: 8;
-
-	overflow: auto;
-	container-type: inline-size;
-}
-
 #content-introduction {
-	max-width: 40%
-}
-
-#introduction {
+	max-width: 40%;
 	font-size: 1cqi;
 }
 

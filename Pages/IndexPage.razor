@@ -1,30 +1,34 @@
-﻿<div class="content flex-vert flex-align-center" align="center">
+﻿<div id="content" class="flex-vert flex-align-center" align="center">
 
-    <span style="font-family: '3dthirteen'; font-size: 5cqi;">Home</span>
-    <hr class="fill-width" />
+    <div class="fill-width flex-vert flex-align-center">
+        <span style="font-family: '3dthirteen'; font-size: 5cqi;">Home</span>
+        <hr class="fill-width" />
+    </div>
 
-    <div id="content-introduction" class="flex-horiz">
+    <div id="content-introduction" class="flex-vert">
 
-        <div id="introduction">
-            <h3>Hello, my name is Konym.</h3>
-            <p>
-                Are you the kind of person that others immediately call upon to sort out technical issues? If so, I think we'll get along :)<br />
-                <br />
-                I am currently approaching my mid-20s and am lucky to say that, so far, I've acquired a good job, some cool friends, and a few fun toys. Isn't that about all you can ask for?
-                (I'm only partially joking)<br />
-                <br />
-                My hobbies include coding, riding my motorcycle, gaming, and hanging out with my friends both online and <b><i>in the real world</i></b> :o<br />
-                <br />
-                You may find me out there on the internet from time to time. Be sure to say hi if you do :)<br />
-                <br />
-                I hope to see you around, and thanks for visiting me!<br />
-                <br />
-            </p>
-        </div>
+        <h3>Hello, my name is Konym.</h3>
+        <p>
+            Are you the kind of person that others immediately call upon to sort out technical issues? If so, I think we'll get along :)<br />
+            <br />
+            I am currently approaching my mid-20s and am lucky to say that, so far, I've acquired a good job, some cool friends, and a few fun toys. Isn't that about all you can ask for?<br />
+            (I'm only partially joking)<br />
+            <br />
+            My hobbies include coding, riding my motorcycle, gaming, and hanging out with my friends both online and <b><i>in the real world</i></b> :o<br />
+            <br />
+            You may find me out there on the internet from time to time. Be sure to say hi if you do :)<br />
+            <br />
+            I hope to see you around, and thanks for visiting me!<br />
+            <br />
+        </p>
         
     </div>
 
-    <div id="content-buttons" class="flex-horiz" style="padding: 25px; gap: 10px;">
+    <div id="content-buttons" class="flex-horiz" style="gap: 10px;">
+        <a target="_blank" style="width: 88px; height: 31px" href="https://nexb13.github.io/netstation/index.htm" title="Logon to the Net Station!">
+            <img style="width: inherit; height: inherit" src="/images/nexb13_button.png" alt="Join us at the Net Station">
+        </a>
+
         <a target="_blank" style="width: 88px; height: 31px" href="https://avery501.neocities.org/" title="Teleport to Avery's nook">
             <img style="width: inherit; height: inherit" src="https://neocities.org/site_thumbnails/25/50/avery501/Avery%E2%80%99s%20Nook.gif.210x158.webp">
         </a>
@@ -35,6 +39,43 @@
     </div>
 
     <div id="content-news" class="flex-vert" style="padding: 25px; gap: 10px;">
+
+        <div class="news-item">
+            <span class="news-item-date" style="color: lightgreen;" align="center">Pinned</span><br/>
+            <span class="news-item-date" align="center">07-16-2026</span>
+
+            <p class="news-item-content" align="left">
+                • A close buddy of mine recently put his own WIP website out on the internet. Go visit!<br />
+                • 👉 <a hx-disable style="text-decoration: none; color:#d3c5fb" target="_blank" href="https://nexb13.github.io/netstation/index.htm"><span style="font-family: FutureEarth">Net Station</span></a> 👈
+            </p>
+        </div>
+
+        <div class="news-item">
+            <span class="news-item-date" align="center">07-20-2026</span>
+            <p class="news-item-content" align="left">
+                • Adjusted site layout - userbadge is now in the top-left and has its own "root box".<br />
+                • Modified HTMX request handling - loading spinner has been updated and content box now uses a "blink" effect to transition between pages.<br />
+                • Page content is now referred to by an id instead of a class. This took embarrasingly long for me to change.<br />
+                • "About" page text has been clamped to a smaller width.<br />
+            </p>
+        </div>
+
+        <div class="news-item">
+            <span class="news-item-date" align="center">07-18-2026</span>
+            <p class="news-item-content" align="left">
+                • Updated primary site font to Segoe UI, the UI font of Windows 7.<br />
+                • Added a site-wide loading spinner for when HTMX requests are in flight. It's the Windows Aero spinner, because of course it is.<br />
+                • Replaced YouTube song embeds in the Navbar with standard HTML audio embeds drawing from a slightly expanded collection of songs than before.<br />
+                &emsp;• Will likely create my own custom audio player to better fit the available space in the Navbar. Or I'll download one from the internet. Stay tuned.
+            </p>
+        </div>
+
+        <div class="news-item">
+            <span class="news-item-date" align="center">06-23-2026</span>
+            <p class="news-item-content" align="left">
+                • Thanks to <span style="color:cadetblue">Kernel32.GetSystemPowerStatus()</span>, the About Page now contains information about the power status of my web server, which is a laptop.<br />
+            </p>
+        </div>
 
         <div class="news-item">
             <span class="news-item-date" align="center">05-13-2026</span>

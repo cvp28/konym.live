@@ -1,8 +1,8 @@
-﻿<div class="content flex-vert flex-align-center">
+﻿<div id="content" class="flex-vert flex-align-center">
 
-    <div class="fill-width">
+    <div class="fill-width flex-vert flex-align-center">
         <span style="font-family: '3dthirteen'; font-size: 5cqi;">About</span>
-        <hr />
+        <hr class="fill-width" />
     </div>
 
     <p id="about-text">
@@ -17,44 +17,67 @@
         - Konym
     </p>
 
-    <div id="page-specifications" class="news-item flex-vert">
-        <span class="fill-width" id="page-specifications-header">Page Specifications</span>
+    <div class="flex-horiz" style="gap: 25px;">
+        <div class="page-specs news-item flex-vert flex-align-center">
+            <span class="fill-width" id="specs-header">Page Specifications</span>
 
-        <div id="page-specifications-content" class="flex-horiz">
-            <span style="text-align: left;">
-                Project Begin:<br />
-                Latest Update:<br />
-                Latest Task:
-            </span>
+            <div id="specs-content" class="flex-horiz">
+                <span style="text-align: left;">
+                    Project Begin<br />
+                    Latest Update<br />
+                    Latest Task
+                </span>
 
-            <span style="text-align: left;">
-                Feburary 2026<br />
-                05-13-2026 ~10PM PST<br />
-                Shadez 2 integration and blog writing
-            </span>
+                <span style="text-align: left;">
+                    Feburary 2026<br />
+                    07-20-2026 ~11PM PST<br />
+                    General site improvements and updates
+                </span>
+            </div>
+        </div>
+
+        <div class="page-specs news-item flex-vert flex-align-center">
+            <span class="fill-width" id="specs-header">Web Server Specifications</span>
+
+            <div id="specs-content" class="flex-horiz">
+                <span style="text-align: left;">
+                    Uptime<br />
+                    Battery Percentage<br />
+                    Plugged In?
+                </span>
+
+                <span
+                    style="text-align: left;"
+                           hx-indicator="#none"
+
+                    hx-get="/frag/get-server-power-info"
+                    hx-trigger="load, every 5s [document.hidden === false]"
+                    hx-target="this"
+                    hx-swap="innerHTML"
+                />
+            </div>
         </div>
     </div>
 
     <style>
-        .content {
-            text-align: center;
-        }
 
         #about-text {
+            text-align: center;
             font-size: 1cqi;
+            width: 40cqi;
         }
 
-        #page-specifications {
+        .page-specs {
             padding: 5px 30px;
             gap: 10px;
         }
 
-        #page-specifications-header {
+        #specs-header {
             font-family: '3dthirteen';
             font-size: 2.5cqi;
         }
 
-        #page-specifications-content {
+        #specs-content {
             font-size: 1cqi;
             margin: 0px;
             gap: 30px;
