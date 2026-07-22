@@ -32,25 +32,72 @@
 		hx-indicator="#none"
 
 		hx-get="/frag/random-song"
-		hx-target="#random-song"
+		hx-target="#media-player"
 		hx-swap="innerHTML"
 	>New Random Song</button>
 
-	<div id="random-song" class="flex-horiz flex-justify-center"
-	
-		hx-get="/frag/random-song"
-		hx-target="this"
-		hx-swap="innerHTML">
+	<div id="media-player" class="flex-vert flex-justify-center">
 
-		<audio controls>
-			<source src="@Globals.Mp3Files.ElementAt(new Random().Next(Globals.Mp3Files.Count)).Replace(@".\wwwroot", "")" type="audio/mpeg">
-		</audio>
+		@{
+			var filename = Globals.RandomMp3File;
+		}
 
+		<marquee>@filename</marquee>
+
+		<audio preload="auto" id="audio-src" src="/mp3/@filename"/>
+
+		<button id="play">▶</button>
+		<input id="seek" type="range" name="Seek" min="0" value="1" step="1"/>
+
+		<script>
+			const audio = document.getElementById("audio-src");
+			const play = document.getElementById("play");
+			const seek = document.getElementById("seek");
+
+			// handle play/pause
+			play.addEventListener("click", function ()
+			{
+				if (audio.paused)
+				{
+					audio.play();
+					play.textContent = "⏸";
+				}
+				else
+				{
+					audio.pause();
+					play.textContent = "▶";
+				}
+			});
+
+			audio.addEventListener("loadedmetadata", function ()
+			{
+				seek.max = audio.duration;
+			});
+
+			// update seek bar
+			audio.ontimeupdate = function()
+			{
+				seek.value = audio.currentTime;
+			};
+
+			audio.onended = function()
+			{
+				seek.value = 0;
+				audio.currentTime = 0;
+				play.textContent = "▶";
+			};
+
+			seek.addEventListener("input", function ()
+			{
+				audio.currentTime = seek.value;
+			});
+		</script>
 	</div>
 
+
 	<style>
-		#random-song {
-			width: 105cqi;
+		#media-player {
+			/*width: 105cqi;*/
 		}
 
 		#nav {

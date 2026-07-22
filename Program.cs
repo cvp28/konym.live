@@ -171,6 +171,7 @@ static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers,
 public static class Globals
 {
 	public static ConcurrentBag<string> Mp3Files = [@"mp3\Azumanga Daioh OST 1 - Kono kara noyouni [Fhq4_Yu_-Gc].mp3"];
+	public static string RandomMp3File => Mp3Files.ElementAt(new Random().Next(Mp3Files.Count));
 
 	public static Task Mp3FilesRefreshTask;
 
@@ -182,7 +183,7 @@ public static class Globals
 			var files = Directory.GetFiles(@".\wwwroot\mp3\");
 
 			foreach (var file in files)
-				Mp3Files.Add(file);
+				Mp3Files.Add(Path.GetFileName(file));
 
 			await Task.Delay(5000);
 		}
