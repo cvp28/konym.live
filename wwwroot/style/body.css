@@ -117,3 +117,24 @@ body {
 .news-item-content {
 	font-size: 1cqi;
 }
+
+.marquee {
+	clip-path: padding-box;
+	white-space: nowrap;
+	container-type: inline-size;
+}
+
+.marquee-15s {
+	display: inline-block;
+	animation: marquee 15s linear infinite;
+}
+
+@keyframes marquee {
+	0% {
+		transform: translateX(105cqi);
+	}
+
+	100% {
+		transform: translateX(-105%);
+	}
+}

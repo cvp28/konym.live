@@ -1,0 +1,32 @@
+﻿<div draggable="true" id="media-player" class="flex-vert flex-justify-center">
+
+	@{
+		var filename = Globals.RandomMp3File;
+	}
+
+	<!--
+		Because people like to bitch moan and complain about <marquee>, here you go 👇
+		This is ugly btw.
+	-->
+
+	<div class="marquee"><span id="media-name" class="marquee-15s">@filename</span></div>
+
+	<audio preload="auto" id="audio-src" src="/mp3/@filename" />
+
+	<div id="media-player-controls" class="flex-horiz">
+		<button id="play">▶</button>
+		<button id="random">🔀</button>
+		<input id="volume" class="fill-width" type="range" name="Volume" min="0" max="1" value="1" step="0.01" />
+	</div>
+
+	<input id="seek" type="range" name="Seek" min="0" value="1" step="1" />
+
+	<script src="js/mp3player.js"></script>
+
+	<style>
+		#media-player {
+			width: 100%;
+			max-width: 15vw;
+		}
+	</style>
+</div>

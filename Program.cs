@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 using Spectre.Console;
 
@@ -13,6 +14,7 @@ using konym.live;
 using konym.live.Pages;
 using konym.live.Pages.Zones;
 using konym.live.Pages.Testing;
+using konym.live.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
@@ -96,12 +98,7 @@ app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList
 
 app.MapGet("/frag/random-song", (HttpContext ctx) =>
 {
-	return
-	$"""
-	<audio controls>
-		<source src="{Globals.Mp3Files.ElementAt(new Random().Next(Globals.Mp3Files.Count)).Replace(@".\wwwroot", "")}" type="audio/mpeg">
-	</audio>
-	""";
+	return Globals.RandomMp3File;
 });
 
 app.MapGet("/frag/get-server-power-info", (HttpContext ctx) =>

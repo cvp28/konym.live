@@ -1,4 +1,6 @@
-﻿<div id="nav" class="flex-vert flex-align-center fill-height">
+﻿@using konym.live.Components;
+
+<div id="nav" class="flex-vert flex-align-center fill-height">
 
 	<img id="logo" src="/images/logo.jpg">
 
@@ -23,83 +25,10 @@
 	</a>
 
 	<span id="void-fill" />
-
-	<button
-		id="random-vid-refresh"
-		class="navlink"
-		style="width: stretch; cursor: pointer;"
-		
-		hx-indicator="#none"
-
-		hx-get="/frag/random-song"
-		hx-target="#media-player"
-		hx-swap="innerHTML"
-	>New Random Song</button>
-
-	<div id="media-player" class="flex-vert flex-justify-center">
-
-		@{
-			var filename = Globals.RandomMp3File;
-		}
-
-		<marquee>@filename</marquee>
-
-		<audio preload="auto" id="audio-src" src="/mp3/@filename"/>
-
-		<button id="play">▶</button>
-		<input id="seek" type="range" name="Seek" min="0" value="1" step="1"/>
-
-		<script>
-			const audio = document.getElementById("audio-src");
-			const play = document.getElementById("play");
-			const seek = document.getElementById("seek");
-
-			// handle play/pause
-			play.addEventListener("click", function ()
-			{
-				if (audio.paused)
-				{
-					audio.play();
-					play.textContent = "⏸";
-				}
-				else
-				{
-					audio.pause();
-					play.textContent = "▶";
-				}
-			});
-
-			audio.addEventListener("loadedmetadata", function ()
-			{
-				seek.max = audio.duration;
-			});
-
-			// update seek bar
-			audio.ontimeupdate = function()
-			{
-				seek.value = audio.currentTime;
-			};
-
-			audio.onended = function()
-			{
-				seek.value = 0;
-				audio.currentTime = 0;
-				play.textContent = "▶";
-			};
-
-			seek.addEventListener("input", function ()
-			{
-				audio.currentTime = seek.value;
-			});
-		</script>
-	</div>
-
+	
+	<Mp3Player/>
 
 	<style>
-		#media-player {
-			/*width: 105cqi;*/
-		}
-
 		#nav {
 			border: 2px solid rgba(196, 255, 0, 0.5);
 			background: linear-gradient(190deg,rgba(0, 65, 115, 0.54) 0%, rgba(196, 177, 0, 0.34) 100%);
