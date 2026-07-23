@@ -2,6 +2,7 @@
 //const element = document.getElementById('active-users');
 
 const elements = document.querySelectorAll("[draggable]")
+const elements_nodrag = document.querySelectorAll(".drag-disable");
 
 document.body.addEventListener("dragover", (event) => {
     event.preventDefault();
@@ -12,8 +13,6 @@ document.body.addEventListener("dragenter", (event) => {
 });
 
 elements.forEach(element => {
-    //element.setAttribute('draggable', 'true');
-
     element.addEventListener('dragstart', (event) => {
         offsetX = event.clientX - element.getBoundingClientRect().left;
         offsetY = event.clientY - element.getBoundingClientRect().top;
@@ -41,4 +40,13 @@ elements.forEach(element => {
         element.style.left = "";
         element.style.top = "";
     });
+});
+
+elements_nodrag.forEach(element => {
+    element.draggable = true;
+
+    element.ondragstart = event => {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 });

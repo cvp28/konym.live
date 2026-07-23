@@ -14,19 +14,32 @@
 	<audio preload="auto" id="audio-src" src="/mp3/@filename" />
 
 	<div id="media-player-controls" class="flex-horiz">
-		<button id="play">▶</button>
-		<button id="random">🔀</button>
-		<input id="volume" class="fill-width" type="range" name="Volume" min="0" max="1" value="1" step="0.01" />
+		<button id="play"><img src="images/playpause.png"/></button>
+		<button id="random"><img src="images/shuffle.png" /></button>
+		<button id="list"><img src="images/list.png" /></button>
+		<input id="volume" class="drag-disable fill-width" type="range" name="Volume" min="0" max="1" value="1" step="0.01" />
 	</div>
 
-	<input id="seek" type="range" name="Seek" min="0" value="1" step="1" />
+	<input id="seek" class="drag-disable fill-width" type="range" name="Seek" min="0" value="1" step="1" />
 
 	<script src="js/mp3player.js"></script>
-
 	<style>
 		#media-player {
 			width: 100%;
 			max-width: 15vw;
+		}
+
+		#play img {
+			aspect-ratio: 1/1;
+			max-width: 15%
+		}
+
+		#random img {
+
+		}
+
+		#list img {
+
 		}
 	</style>
 </div>

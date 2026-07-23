@@ -9,11 +9,9 @@ const name = document.getElementById("media-name");
 play.onclick = function () {
 	if (audio.paused) {
 		audio.play();
-		play.textContent = "⏸";
 	}
 	else {
 		audio.pause();
-		play.textContent = "▶";
 	}
 };
 
