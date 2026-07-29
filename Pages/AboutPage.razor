@@ -18,10 +18,10 @@
     </p>
 
     <div class="flex-horiz" style="gap: 25px;">
-        <div class="page-specs news-item flex-vert flex-align-center">
-            <span class="fill-width" id="specs-header">Page Specifications</span>
+        <div class="page-specs flex-vert flex-align-center">
+            <span class="fill-width specs-header">Page Specifications</span>
 
-            <div id="specs-content" class="flex-horiz">
+            <div class="flex-horiz specs-content">
                 <span style="text-align: left;">
                     Project Begin<br />
                     Latest Update<br />
@@ -30,16 +30,16 @@
 
                 <span style="text-align: left;">
                     Feburary 2026<br />
-                    07-20-2026 ~11PM PST<br />
-                    General site improvements and updates
+                    07-26-2026 ~10PM PST<br />
+                    Mp3 Player list feature
                 </span>
             </div>
         </div>
 
-        <div class="page-specs news-item flex-vert flex-align-center">
-            <span class="fill-width" id="specs-header">Web Server Specifications</span>
+        <div class="page-specs flex-vert flex-align-center">
+            <span class="fill-width specs-header">Web Server Specifications</span>
 
-            <div id="specs-content" class="flex-horiz">
+            <div class="flex-horiz specs-content">
                 <span style="text-align: left;">
                     Uptime<br />
                     Battery Percentage<br />
@@ -48,7 +48,7 @@
 
                 <span
                     style="text-align: left;"
-                           hx-indicator="#none"
+                    hx-indicator="#none"
 
                     hx-get="/frag/get-server-power-info"
                     hx-trigger="load, every 5s [document.hidden === false]"
@@ -68,16 +68,24 @@
         }
 
         .page-specs {
+            color: burlywood;
+            background-color: black;
+
+            text-align: center;
+
             padding: 5px 30px;
             gap: 10px;
+
+            border: 2px solid white;
+            border-image: linear-gradient(190deg, rgba(0, 65, 115, 0.5), rgba(196, 177, 0, 0.5)) 1;
         }
 
-        #specs-header {
+        .specs-header {
             font-family: '3dthirteen';
             font-size: 2.5cqi;
         }
 
-        #specs-content {
+        .specs-content {
             font-size: 1cqi;
             margin: 0px;
             gap: 30px;

@@ -96,26 +96,9 @@ body {
 	height: stretch;
 }
 
-#content-introduction {
-	max-width: 40%;
-	font-size: 1cqi;
-}
-
-.news-item {
-	color: burlywood;
-	background-color: black;
+.site-theme-border {
 	border: 2px solid white;
 	border-image: linear-gradient(190deg, rgba(0, 65, 115, 0.5), rgba(196, 177, 0, 0.5)) 1;
-	padding: 5px 10px;
-}
-
-.news-item-date {
-	font-family: '3dthirteen';
-	font-size: 3cqi;
-}
-
-.news-item-content {
-	font-size: 1cqi;
 }
 
 .marquee {

@@ -114,6 +114,14 @@ app.MapGet("/frag/get-server-power-info", (HttpContext ctx) =>
 	""";
 });
 
+app.MapGet("/frag/mp3-list", (HttpContext ctx) =>
+{
+	StringBuilder content = new();
+
+	//return string.Join(',', Globals.Mp3Files.ToArray());
+	return new RazorComponentResult<Mp3List>();
+});
+
 // Simple pages
 app.MapGet("/", APIUtils.DefaultPartialOrFullHandler<IndexPage>);
 app.MapGet("/about", APIUtils.DefaultPartialOrFullHandler<AboutPage>);
@@ -167,7 +175,7 @@ static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers,
 
 public static class Globals
 {
-	public static ConcurrentBag<string> Mp3Files = [@"mp3\Azumanga Daioh OST 1 - Kono kara noyouni [Fhq4_Yu_-Gc].mp3"];
+	public static ConcurrentBag<string> Mp3Files = [""];
 	public static string RandomMp3File => Mp3Files.ElementAt(new Random().Next(Mp3Files.Count));
 
 	public static Task Mp3FilesRefreshTask;

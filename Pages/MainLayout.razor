@@ -9,6 +9,10 @@
     <link rel="stylesheet" type="text/css" href="/style/body.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico">
 
+    <script src="js\draggable.js" defer></script>
+
+    <meta name="htmx-config" content='{"allowScriptTags": true}'>
+
     <!--Prevent blinding FUOC (Flash-of-unstyled-content)-->
     <style>
         html { background-color: black; }
@@ -61,7 +65,7 @@
 
 <body hx-boost="true" hx-target="#content" hx-swap="outerHTML" hx-indicator="#content, #global-loading">
 
-    <img id="global-loading" src="images/aero_spinner.gif"/>
+    <img id="global-loading" src="/images/aero_spinner.gif"/>
 
     <div id="root" class="flex-horiz">
         <div id="root-left" class="flex-vert">
@@ -72,6 +76,8 @@
 
         @Content
     </div>
+
+
 </body>
 </html>
 

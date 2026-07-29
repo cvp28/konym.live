@@ -1,0 +1,28 @@
+﻿<form method="dialog" class="drag-disable">
+	@{
+		var Mp3s = Globals.Mp3Files.ToArray();
+		Mp3s.Sort();
+
+		foreach (var mp3 in Mp3s)
+		{
+			<div class="mp3-item flex-horiz">
+			<button type="submit" onclick="ResetAndPlayMp3('@mp3')">@mp3</button>
+			</div>
+		}
+
+	}
+
+	<style>
+		.mp3-item button {
+			border: none;
+			color: burlywood;
+			background-color: rgba(0, 0, 0, 0);
+		}
+
+		.mp3-item button:hover {
+			cursor: pointer;
+			color: aquamarine;
+			background-color: black;
+		}
+	</style>
+</form>

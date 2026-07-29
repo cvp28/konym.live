@@ -1,8 +1,21 @@
-﻿<div draggable="true" id="media-player" class="flex-vert flex-justify-center">
+﻿<div id="media-player" draggable="true" class="flex-vert flex-justify-center">
 
 	@{
 		var filename = Globals.RandomMp3File;
 	}
+
+	<dialog id="mp-list-modal" class="drag-disable site-theme-border"
+		
+		hx-trigger="mp-list-show-event"
+		hx-get="/frag/mp3-list"
+		hx-target="this"
+		hx-swap="innerHTML"
+		hx-indicator="#none"
+	>
+		
+		<span>Getting mp3 list...</span>
+
+	</dialog>
 
 	<!--
 		Because people like to bitch moan and complain about <marquee>, here you go 👇
@@ -11,35 +24,89 @@
 
 	<div class="marquee"><span id="media-name" class="marquee-15s">@filename</span></div>
 
-	<audio preload="auto" id="audio-src" src="/mp3/@filename" />
+	<audio preload="metadata" id="audio-src" src="/mp3/@filename" />
 
 	<div id="media-player-controls" class="flex-horiz">
-		<button id="play"><img src="images/playpause.png"/></button>
-		<button id="random"><img src="images/shuffle.png" /></button>
-		<button id="list"><img src="images/list.png" /></button>
-		<input id="volume" class="drag-disable fill-width" type="range" name="Volume" min="0" max="1" value="1" step="0.01" />
+		<button id="play"><img class="drag-disable" src="/images/playpause.png"/></button>
+		<button id="random"><img class="drag-disable" src="/images/shuffle.png" /></button>
+		<button id="list"><img class="drag-disable" src="/images/list.png" /></button>
+		<input id="volume" class="drag-disable fill-width" type="range" name="Volume" min="0" max="1" value="0.5" step="0.01" />
 	</div>
 
 	<input id="seek" class="drag-disable fill-width" type="range" name="Seek" min="0" value="1" step="1" />
 
-	<script src="js/mp3player.js"></script>
+	<script src="/js/mp3player.js"></script>
 	<style>
 		#media-player {
 			width: 100%;
 			max-width: 15vw;
+			z-index: 998;
+		}
+
+		#volume {
+			width: 100%;
+			margin: 0px;
+		}
+
+		#seek {
+			width: 100%;
+			margin: 0px;
+		}
+
+		#void-fill {
+			flex-grow: 1;
+		}
+
+		#play, #random, #list {
+			aspect-ratio: 1/1;
+			background: none;
+			padding: 0;
 		}
 
 		#play img {
-			aspect-ratio: 1/1;
-			max-width: 15%
+			height: auto;
+			max-width: 10cqi;
+			filter: brightness(0) saturate(100%) invert(99%) sepia(0%) saturate(2734%) hue-rotate(300deg) brightness(108%) contrast(100%);
 		}
 
 		#random img {
-
+			height: auto;
+			max-width: 10cqi;
+			filter: brightness(0) saturate(100%) invert(99%) sepia(0%) saturate(2734%) hue-rotate(300deg) brightness(108%) contrast(100%);
 		}
 
 		#list img {
+			height: auto;
+			max-width: 10cqi;
+			filter: brightness(0) saturate(100%) invert(99%) sepia(0%) saturate(2734%) hue-rotate(300deg) brightness(108%) contrast(100%);
+		}
 
+		#mp-list-modal {
+			color: burlywood;
+			background: black;
+			
+			opacity: 0;
+			transition: opacity 0.2s ease-in, overlay 0.2s ease-in allow-discrete, display 0.2s linear allow-discrete;
+		}
+
+		#mp-list-modal[open] {
+			opacity: 1.0;
+		}
+
+		@@starting-style {
+			#mp-list-modal {
+				opacity: 0;
+			}
+
+			#mp-list-modal[open] {
+				opacity: 0;
+			}
+		}
+
+		#mp-list-modal::backdrop {
+			background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+			backdrop-filter: blur(2px); /* Modern blurred background effect */
+			cursor: auto;
 		}
 	</style>
 </div>

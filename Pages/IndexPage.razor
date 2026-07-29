@@ -18,8 +18,7 @@
             <br />
             You may find me out there on the internet from time to time. Be sure to say hi if you do :)<br />
             <br />
-            I hope to see you around, and thanks for visiting me!<br />
-            <br />
+            I hope to see you around, and thanks for visiting me!
         </p>
         
     </div>
@@ -38,10 +37,10 @@
         </a>
     </div>
 
-    <div id="content-news" class="flex-vert" style="padding: 25px; gap: 10px;">
+    <div id="content-news" class="flex-vert" onwheel="event.preventDefault(); this.scrollBy(0, Math.sign(event.deltaY) * this.clientHeight)">
 
         <div class="news-item">
-            <span class="news-item-date" style="color: lightgreen;" align="center">Pinned</span><br/>
+            <span class="news-item-date news-item-pinned" style="color: lightgreen;" align="center">Pinned</span>
             <span class="news-item-date" align="center">07-16-2026</span>
 
             <p class="news-item-content" align="left">
@@ -51,12 +50,31 @@
         </div>
 
         <div class="news-item">
+            <span class="news-item-date" align="center">07-26-2026</span>
+            <p class="news-item-content" align="left">
+                • The song selector list for the Mp3 Player is now functional! (and a tiny bit styled as well)<br />
+                • Moved "Pinned" around in the changelog.
+            </p>
+        </div>
+
+        <div class="news-item">
+            <span class="news-item-date" align="center">07-25-2026</span>
+            <p class="news-item-content" align="left">
+                • Adjusted site layout - userbadge is now in the bottom-left again. I am indecisive.<br />
+                • A WIP Mp3 Player is now included! This will eventually be styled to fit the site theme. Somehow.<br />
+                • The Home page changelog has been made into a compact and scrollable view where every scroll event scrolls by a whole entry.<br />
+                • Fixed "konym.live" Home page link in the Navbar<br />
+                • Zone Article buttons now correctly cause page loading transitions to occur.
+            </p>
+        </div>
+
+        <div class="news-item">
             <span class="news-item-date" align="center">07-20-2026</span>
             <p class="news-item-content" align="left">
                 • Adjusted site layout - userbadge is now in the top-left and has its own "root box".<br />
                 • Modified HTMX request handling - loading spinner has been updated and content box now uses a "blink" effect to transition between pages.<br />
                 • Page content is now referred to by an id instead of a class. This took embarrasingly long for me to change.<br />
-                • "About" page text has been clamped to a smaller width.<br />
+                • "About" page text has been clamped to a smaller width.
             </p>
         </div>
 
@@ -187,4 +205,59 @@
             </p>
         </div>
     </div>
+
+    <style>
+        #content {
+            gap: 20px;
+        }
+
+        #content-introduction {
+            max-width: 40%;
+            font-size: 1cqi;
+        }
+
+        #content-news {
+            position: relative;
+
+            max-height: round(nearest, 25vh, 1px);
+            max-width: round(nearest, 75cqi, 1px);
+            width: round(nearest, 75cqi, 1px);
+
+            overflow: auto;
+            padding: 0px 10px;
+
+            scrollbar-width: none;
+            scroll-snap-type: y mandatory;
+
+            color: burlywood;
+            background-color: black;
+            
+            border: 2px solid white;
+            border-image: linear-gradient(190deg, rgba(0, 65, 115, 0.5), rgba(196, 177, 0, 0.5)) 1;
+        }
+
+        .news-item {
+            min-height: round(nearest, 100%, 1px);
+            min-width: round(nearest, 100%, 1px);
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            scroll-snap-stop: always;
+            content-visibility: auto;
+        }
+
+        .news-item-date {
+            font-family: '3dthirteen';
+            font-size: 3cqi;
+        }
+
+        .news-item-content {
+            font-size: 1cqi;
+        }
+
+        .news-item-pinned {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+    </style>
 </div>
