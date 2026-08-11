@@ -1,4 +1,4 @@
-﻿<div id="media-player" draggable="true" class="flex-vert flex-justify-center">
+﻿<div id="media-player" draggable="true" class="site-theme-border flex-vert flex-justify-center">
 
 	@{
 		var filename = Globals.RandomMp3File;
@@ -38,7 +38,8 @@
 	<script src="/js/mp3player.js"></script>
 	<style>
 		#media-player {
-			width: 100%;
+			padding: 10px;
+			min-width: 10vw;
 			max-width: 15vw;
 			z-index: 998;
 		}
@@ -59,25 +60,26 @@
 
 		#play, #random, #list {
 			aspect-ratio: 1/1;
+			max-width: 1cqi;
 			background: none;
 			padding: 0;
 		}
 
 		#play img {
 			height: auto;
-			max-width: 10cqi;
+			width: 100%;
 			filter: brightness(0) saturate(100%) invert(99%) sepia(0%) saturate(2734%) hue-rotate(300deg) brightness(108%) contrast(100%);
 		}
 
 		#random img {
 			height: auto;
-			max-width: 10cqi;
+			width: 100%;
 			filter: brightness(0) saturate(100%) invert(99%) sepia(0%) saturate(2734%) hue-rotate(300deg) brightness(108%) contrast(100%);
 		}
 
 		#list img {
 			height: auto;
-			max-width: 10cqi;
+			width:100%;
 			filter: brightness(0) saturate(100%) invert(99%) sepia(0%) saturate(2734%) hue-rotate(300deg) brightness(108%) contrast(100%);
 		}
 

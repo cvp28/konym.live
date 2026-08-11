@@ -1,0 +1,61 @@
+﻿
+<div id="chat-badge" draggable="true" class="site-theme-border flex-vert flex-align-center">
+	
+	<div id="chat-controls" class="flex-horiz fill-width">
+		<span class="fill-width">Chat!</span>
+
+		<button class="fill-width" onclick="ConnectToChat();">Open</button>
+		<button class="fill-width" onclick="term.clear();">Clear</button>
+		<button class="fill-width" onclick="ws.close();">Close</button>
+		<button class="fill-width" onclick="term.scrollToBottom();">Scroll</button>
+	</div>
+
+	<div id="terminal" />
+
+	<script>
+		const term = new Terminal();
+		const fit = new FitAddon.FitAddon();
+
+		var ws;
+
+		term.loadAddon(fit);
+		term.open(document.getElementById('terminal'));
+
+		fit.fit();
+
+		document.getElementById('chat-badge').onresize = function() {
+			fit.fit();
+		};
+
+		function ConnectToChat()
+		{
+			ws = new WebSocket(`ws://${location.host}/chat-ws`);
+
+			ws.onopen = function(event) {
+				term.writeln('Connected to chat-ws!');
+				term.scrollToBottom();
+			};
+
+			ws.onclose = function(event) {
+				term.writeln('Disconnected!');
+				term.scrollToBottom();
+			}
+		}
+	</script>
+
+	<style>
+		#chat-badge {
+			padding: 10px;
+			gap: 20px;
+			max-width: 15vw;
+			max-height: 20vh;
+			overflow: hidden;
+		}
+
+		#terminal {
+			overflow: hidden;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</div>

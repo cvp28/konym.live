@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Net.WebSockets;
 using System.Text;
 using System.Diagnostics;
 using System.Collections.Concurrent;
@@ -32,6 +33,7 @@ var app = builder.Build();
 
 app.UseAntiforgery();
 app.UseForwardedHeaders();
+app.UseWebSockets();
 
 app.UseStaticFiles(new StaticFileOptions()
 {
@@ -120,6 +122,38 @@ app.MapGet("/frag/mp3-list", (HttpContext ctx) =>
 
 	//return string.Join(',', Globals.Mp3Files.ToArray());
 	return new RazorComponentResult<Mp3List>();
+});
+
+app.MapGet("/frag/chat-app", (HttpContext ctx) =>
+{
+	return new RazorComponentResult<ChatApp>();
+});
+
+app.Map("/chat-ws", async (HttpContext ctx) =>
+{
+	if (!ctx.WebSockets.IsWebSocketRequest)
+	{
+		ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
+		return;
+	}
+
+	using var socket = await ctx.WebSockets.AcceptWebSocketAsync();
+
+	await Task.Run(async delegate
+	{
+		byte[] InputBuffer = new byte[1024 * 4];
+		WebSocketReceiveResult recv;
+
+		do
+		{
+			recv = await socket.ReceiveAsync(new(InputBuffer), CancellationToken.None);
+			await socket.SendAsync(new(InputBuffer, 0, recv.Count), WebSocketMessageType.Text, true, CancellationToken.None);   // Simply echo the text back
+
+			if (Encoding.UTF8.GetString(InputBuffer, 0, recv.Count) == "kill")
+				Environment.Exit(0);
+		}
+		while (recv.MessageType != WebSocketMessageType.Close);
+	});
 });
 
 // Simple pages
