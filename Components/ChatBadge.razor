@@ -6,8 +6,8 @@
 
 		<button class="fill-width" onclick="ConnectToChat();">Open</button>
 		<button class="fill-width" onclick="term.clear();">Clear</button>
-		<button class="fill-width" onclick="ws.close();">Close</button>
-		<button class="fill-width" onclick="term.scrollToBottom();">Scroll</button>
+		<button class="fill-width" onclick="if (ws.readyState !== 3) ws.close();">Close</button>
+		<button class="fill-width" onclick="fit.fit();">Fit</button>
 	</div>
 
 	<div id="terminal" />
@@ -21,24 +21,26 @@
 		term.loadAddon(fit);
 		term.open(document.getElementById('terminal'));
 
-		fit.fit();
+		term.onWriteParsed(function() {
+			term.scrollToBottom();
+		});
 
-		document.getElementById('chat-badge').onresize = function() {
-			fit.fit();
-		};
+		fit.fit();
 
 		function ConnectToChat()
 		{
+			// If we're already connected, return
+			if (ws && ws.readyState === 1)
+				return;
+
 			ws = new WebSocket(`ws://${location.host}/chat-ws`);
 
 			ws.onopen = function(event) {
 				term.writeln('Connected to chat-ws!');
-				term.scrollToBottom();
 			};
 
 			ws.onclose = function(event) {
 				term.writeln('Disconnected!');
-				term.scrollToBottom();
 			}
 		}
 	</script>
@@ -47,9 +49,10 @@
 		#chat-badge {
 			padding: 10px;
 			gap: 20px;
+			min-width: 10vw;
 			max-width: 15vw;
 			max-height: 20vh;
-			overflow: hidden;
+			max-height: 20vh;
 		}
 
 		#terminal {
