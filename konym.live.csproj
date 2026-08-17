@@ -19,6 +19,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Collections.Pooled">
+      <HintPath>Binaries\Collections.Pooled.dll</HintPath>
+    </Reference>
+    <Reference Include="CosmoSlim">
+      <HintPath>Binaries\CosmoSlim.dll</HintPath>
+    </Reference>
+    <Reference Include="FuzzySharp">
+      <HintPath>Binaries\FuzzySharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Hv2Slim">
+      <HintPath>Binaries\Hv2Slim.dll</HintPath>
+    </Reference>
+    <Reference Include="Utf8StringInterpolation">
+      <HintPath>Binaries\Utf8StringInterpolation.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="ServerContent\life-topics\tbd_03-09-2026.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

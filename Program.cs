@@ -1,21 +1,27 @@
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
-using System.Text;
-using System.Diagnostics;
-using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 using Spectre.Console;
+using Utf8StringInterpolation;
+
+using CosmoSlim;
+using Hv2UI;
 
 using konym.live;
 using konym.live.Pages;
 using konym.live.Pages.Zones;
 using konym.live.Pages.Testing;
 using konym.live.Components;
+using konym.live.textmode.UI;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
@@ -43,6 +49,7 @@ app.UseStaticFiles(new StaticFileOptions()
 
 app.MapStaticAssets();
 
+/*
 app.MapGet("/bedroom-light-on", (HttpContext ctx) =>
 {
 	using var client = new UdpClient("wiz_bc4853.lan", 38899);
@@ -58,6 +65,7 @@ app.MapGet("/bedroom-light-off", (HttpContext ctx) =>
 	var bytes = Encoding.UTF8.GetBytes("""{"id":1,"method":"setState","params":{"state":false}}""");
 	client.Send(bytes, bytes.Length);
 });
+*/
 
 app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList) =>
 {
@@ -124,11 +132,6 @@ app.MapGet("/frag/mp3-list", (HttpContext ctx) =>
 	return new RazorComponentResult<Mp3List>();
 });
 
-app.MapGet("/frag/chat-app", (HttpContext ctx) =>
-{
-	return new RazorComponentResult<ChatApp>();
-});
-
 app.Map("/chat-ws", async (HttpContext ctx) =>
 {
 	if (!ctx.WebSockets.IsWebSocketRequest)
@@ -139,21 +142,116 @@ app.Map("/chat-ws", async (HttpContext ctx) =>
 
 	using var socket = await ctx.WebSockets.AcceptWebSocketAsync();
 
-	await Task.Run(async delegate
+	var hv2 = new Hv2App(120, 30, true);
+
+	hv2.Layers.Add("Main", new BadAppleLayer(hv2, true));
+	hv2.Layers.Add("Chat", new ChatLayer(ctx.Connection.Id, hv2, false));
+	
+	Globals.Hv2Instances[ctx.Connection.Id] = hv2;
+
+	var InputTaskCanceller = new CancellationTokenSource();
+
+	// Input from client task
+	var InputTask = Task.Run(async delegate
 	{
-		byte[] InputBuffer = new byte[1024 * 4];
+		byte[] InputBuffer = new byte[1024];
 		WebSocketReceiveResult recv;
 
 		do
 		{
-			recv = await socket.ReceiveAsync(new(InputBuffer), CancellationToken.None);
-			await socket.SendAsync(new(InputBuffer, 0, recv.Count), WebSocketMessageType.Text, true, CancellationToken.None);   // Simply echo the text back
+			try
+			{
+				recv = await socket.ReceiveAsync(new(InputBuffer), InputTaskCanceller.Token);
+			}
+			catch (OperationCanceledException)
+			{
+				return;
+			}
 
-			if (Encoding.UTF8.GetString(InputBuffer, 0, recv.Count) == "kill")
-				Environment.Exit(0);
+			var rcvd = Encoding.UTF8.GetString(InputBuffer, 0, recv.Count);
+
+			ConsoleKeyInfo cki;
+
+			switch (rcvd)
+			{
+				case "\e[A":
+					// up arrow
+					cki = new(' ', ConsoleKey.UpArrow, false, false, false);
+					Globals.Hv2Instances[ctx.Connection.Id].InputBuffer.Enqueue(cki);
+					break;
+
+				case "\e[B":
+					cki = new(' ', ConsoleKey.DownArrow, false, false, false);
+					Globals.Hv2Instances[ctx.Connection.Id].InputBuffer.Enqueue(cki);
+					continue;
+
+				case "\e[C":
+					cki = new(' ', ConsoleKey.RightArrow, false, false, false);
+					Globals.Hv2Instances[ctx.Connection.Id].InputBuffer.Enqueue(cki);
+					break;
+
+				case "\e[D":
+					cki = new(' ', ConsoleKey.LeftArrow, false, false, false);
+					Globals.Hv2Instances[ctx.Connection.Id].InputBuffer.Enqueue(cki);
+					break;
+
+				case "\u007f":
+					cki = new(' ', ConsoleKey.Backspace, false, false, false);
+					Globals.Hv2Instances[ctx.Connection.Id].InputBuffer.Enqueue(cki);
+					break;
+
+				case "\r\n":
+				case "\r":
+				case "\n":
+					cki = new(' ', ConsoleKey.Enter, false, false, false);
+					Globals.Hv2Instances[ctx.Connection.Id].InputBuffer.Enqueue(cki);
+					break;
+
+				default:
+					foreach (char c in rcvd)
+					{
+						cki = new ConsoleKeyInfo(c, ConsoleKey.None, false, false, false);
+						Globals.Hv2Instances[ctx.Connection.Id].InputBuffer.Enqueue(cki);
+					}
+					break;
+			}
 		}
 		while (recv.MessageType != WebSocketMessageType.Close);
 	});
+
+	// Output to client task
+	hv2.OnRendererOutput = async delegate (Utf8StringBuffer buf)
+	{
+		if (socket.State != WebSocketState.Open)
+		{
+			//Console.WriteLine($"{ctx.Connection.Id} renderer running even though connection is closed, signalling exit...");
+			Globals.Hv2Instances[ctx.Connection.Id].SignalExit();
+			return;
+		}
+
+		try
+		{
+			var arr = buf.ToArray();
+			await socket.SendAsync(new(arr), WebSocketMessageType.Text, true, CancellationToken.None);
+
+			//Console.WriteLine($"Sent {arr.Length} bytes to {ctx.Connection.Id}");
+		}
+		catch (Exception)
+		{
+			//Console.WriteLine("Error writing to client {0}: {1}", ctx.Connection.Id, ex.Message);
+			Globals.Hv2Instances[ctx.Connection.Id].SignalExit();
+		}
+	};
+
+	hv2.Run();
+
+	// Cleanup input task
+	InputTaskCanceller.Cancel();
+	await InputTask;
+
+	// Cleanup Hv2 instance
+	Globals.Hv2Instances.Remove(ctx.Connection.Id, out _);
+
 });
 
 // Simple pages
@@ -173,6 +271,7 @@ app.MapGet("/zones/life", APIUtils.ZoneHandler<LifeZonePage>);
 app.MapGet("/zones/cars-and-bikes", APIUtils.ZoneHandler<CarsAndBikesZonePage>);
 
 Globals.Mp3FilesRefreshTask = Task.Run(Globals.Mp3FilesRefreshProc);
+Globals.BadAppleLoadTask = Task.Run(Globals.LoadBadAppleFrames);
 
 app.Run();
 
@@ -182,7 +281,7 @@ static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers,
 
 	if (TryUser is null)
 	{
-		using HttpClient client = new HttpClient();
+		using var client = new HttpClient();
 		string Country = Headers.TryGetValue("CF-IPCountry", out var country) ? country : "<unknown>";
 
 		// Add new visit to the tracker
@@ -209,10 +308,14 @@ static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers,
 
 public static class Globals
 {
-	public static ConcurrentBag<string> Mp3Files = [""];
 	public static string RandomMp3File => Mp3Files.ElementAt(new Random().Next(Mp3Files.Count));
-
+	public static ConcurrentBag<string> Mp3Files = [""];
 	public static Task Mp3FilesRefreshTask;
+
+	public static string[] BadAppleFrames;
+	public static Task BadAppleLoadTask;
+
+	public static ConcurrentDictionary<string, Hv2App> Hv2Instances = [];
 
 	public static async void Mp3FilesRefreshProc()
 	{
@@ -228,6 +331,25 @@ public static class Globals
 		}
 	}
 
+	public static void LoadBadAppleFrames()
+	{
+		//var FramePaths = Directory.GetFiles(@".\ServerContent\bad_apple_frames_ascii");
+		var FramePaths = Directory.GetFiles(@"D:\konym.live\TextModeApp\bad_apple_frames_ascii");
+		BadAppleFrames = new string[FramePaths.Length];
+
+		for (int i = 0; i < FramePaths.Length; i++)
+			BadAppleFrames[i] = File.ReadAllText(FramePaths[i]);
+	}
+
+	[MethodImpl(MethodImplOptions.Synchronized)]
+	public static void DoChatMessage(string From, string Message, Color24 FromFG, Color24 MessageFG)
+	{
+		foreach (var kvp in Hv2Instances)
+		{
+			(kvp.Value.Layers["Chat"] as ChatLayer).tbChat.Write($"{From}", FromFG, Color24.Black);
+			(kvp.Value.Layers["Chat"] as ChatLayer).tbChat.WriteLine($": {Message}", MessageFG, Color24.Black);
+		}
+	}
 }
 
 public class User

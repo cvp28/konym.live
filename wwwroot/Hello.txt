@@ -1,0 +1,21 @@
+Hello, my name is Konym.
+
+Of course, that's an alias. Maybe one day you'll know my real name. Maybe you already do!
+
+I'm doing this as a somewhat-inexpensive coding side project for the year 2026.
+Specifically, this domain will (hopefully) eventually host a .NET/Blazor WASM app which serves a personal website containing stuff that I like or find interesting.
+
+Kinda spitballing this, but here's a rough outline:
+
+Real-time chat with support for rooms, private messaging, and simple user support (username/password only)
+Maybe a simple game or two
+Music player (with song of the day?)
+Simple blog page for me to ramble on
+Links page aggregating my interesting finds
+
+... and probably some other stuff I'll manage to dream up in due time.
+
+See you... when I see you, I guess.
+I haven't written a single line of code yet.
+
+- Konym 2/21/2026 ~ 8:53 PM

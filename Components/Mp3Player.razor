@@ -1,9 +1,5 @@
 ﻿<div id="media-player" draggable="true" class="site-theme-border flex-vert flex-justify-center">
 
-	@{
-		var filename = Globals.RandomMp3File;
-	}
-
 	<dialog id="mp-list-modal" class="drag-disable site-theme-border"
 		
 		hx-trigger="mp-list-show-event"
@@ -22,9 +18,9 @@
 		This is ugly btw.
 	-->
 
-	<div class="marquee"><span id="media-name" class="marquee-15s">@filename</span></div>
+	<div class="marquee"><span id="media-name" class="marquee-15s">Select a track!</span></div>
 
-	<audio preload="metadata" id="audio-src" src="/mp3/@filename" />
+	<audio preload="metadata" id="audio-src" />
 
 	<div id="media-player-controls" class="flex-horiz">
 		<button id="play"><img class="drag-disable" src="/images/playpause.png"/></button>
@@ -38,9 +34,13 @@
 	<script src="/js/mp3player.js"></script>
 	<style>
 		#media-player {
+			display: none;
+			position: absolute;
+
+			background: black;
+
 			padding: 10px;
-			min-width: 10vw;
-			max-width: 15vw;
+			min-width: 15vw;
 			z-index: 998;
 		}
 

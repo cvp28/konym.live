@@ -38,14 +38,14 @@
     </div>
 
     <div id="content-news" class="flex-vert" onwheel="event.preventDefault(); this.scrollBy(0, Math.sign(event.deltaY) * this.clientHeight)">
+        <!--<span class="news-item-date news-item-pinned" style="color: lightgreen;" align="center">Pinned</span>-->
 
         <div class="news-item">
-            <span class="news-item-date news-item-pinned" style="color: lightgreen;" align="center">Pinned</span>
-            <span class="news-item-date" align="center">07-16-2026</span>
-
+            <span class="news-item-date" align="center">08-15-2026</span>
             <p class="news-item-content" align="left">
-                • A close buddy of mine recently put his own WIP website out on the internet. Go visit!<br />
-                • 👉 <a hx-disable style="text-decoration: none; color:#d3c5fb" target="_blank" href="https://nexb13.github.io/netstation/index.htm"><span style="font-family: FutureEarth">Net Station</span></a> 👈
+                • Due to space and layout constraints, the Mp3 Player and newly added Chat window are now available via right-clicking anywhere on the page (navbar and content area).<br />
+                • The little-known konym.live.textmode SSH application has been ported to work over websockets! The site uses xterm.js to interact with the backend app instance.<br />
+                • The konym.live.textmode app features an ASCII rendition of Bad Apple, skippable by pressing <span style="color: cadetblue">[ENTER]</span> as well as an anonymous chat room. Type <span style="color:cadetblue">/help</span> for a basic list of commands.
             </p>
         </div>
 
@@ -85,6 +85,15 @@
                 • Added a site-wide loading spinner for when HTMX requests are in flight. It's the Windows Aero spinner, because of course it is.<br />
                 • Replaced YouTube song embeds in the Navbar with standard HTML audio embeds drawing from a slightly expanded collection of songs than before.<br />
                 &emsp;• Will likely create my own custom audio player to better fit the available space in the Navbar. Or I'll download one from the internet. Stay tuned.
+            </p>
+        </div>
+
+        <div class="news-item">
+            <span class="news-item-date" align="center">07-16-2026</span>
+
+            <p class="news-item-content" align="left">
+                • A close buddy of mine recently put his own WIP website out on the internet. Go visit!<br />
+                • 👉 <a hx-disable style="text-decoration: none; color:#d3c5fb" target="_blank" href="https://nexb13.github.io/netstation/index.htm"><span style="font-family: FutureEarth">Net Station</span></a> 👈
             </p>
         </div>
 
