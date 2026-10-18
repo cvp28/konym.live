@@ -363,4 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 /ServerContent/unpublished-topics/*
 
-/wwwroot/mp3/*
+/wwwroot/mp3
+
+/yt-dlp.exe
