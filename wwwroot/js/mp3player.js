@@ -1,53 +1,71 @@
 ﻿const audio = document.getElementById("audio-src");
-const play = document.getElementById("play");
-const random = document.getElementById("random");
-const list = document.getElementById("list");
-const seek = document.getElementById("seek");
-const volume = document.getElementById("volume");
-const name = document.getElementById("media-name");
+
+const name_marquee = document.getElementById("media-name");
 const list_modal = document.getElementById("mp-list-modal");
+
+let refresh_modal = true;
 
 InitMediaSession();
 
-audio.volume = volume.value;
+audio.volume = document.getElementById("volume-slider").value;
 
-// handle play/pause
-play.onclick = function () {
+document.getElementById("media-player").addEventListener("click", OnMp3Input);
+document.getElementById("media-player").addEventListener("input", OnMp3Input);
+
+function OnMp3Input(event) {
+	switch (event.target.dataset?.action) {
+		case "play":
+			PlayPause();
+			break;
+
+		case "random":
+			PlayRandomMp3();
+			break;
+
+		case "list":
+			DoList();
+			break;
+
+		case "volume":
+			audio.volume = document.getElementById("volume-slider").value;
+			break;
+
+		case "seek":
+			audio.currentTime = document.getElementById("seek-slider").value;
+			break;
+	}
+}
+
+function PlayPause() {
 	if (audio.paused) {
 		audio.play();
 	}
 	else {
 		audio.pause();
 	}
-};
+}
 
-random.onclick = PlayRandomMp3;
-
-list.onclick = function (event) {
+function DoList() {
 	list_modal.showModal();
-	list_modal.dispatchEvent(new Event("mp-list-show-event"))
-};
+
+	if (refresh_modal) {
+		list_modal.dispatchEvent(new Event("mp-list-show-event"))
+		refresh_modal = false;
+	}
+}
 
 audio.onloadedmetadata = function () {
-	seek.max = audio.duration;
+	document.getElementById("seek-slider").max = audio.duration;
 };
 
 // update seek bar
 audio.ontimeupdate = function () {
-	seek.value = audio.currentTime;
+	document.getElementById("seek-slider").value = audio.currentTime;
 };
 
 audio.onended = function () {
-	seek.value = 0;
+	document.getElementById("seek-slider").value = 0;
 	audio.currentTime = 0;
-};
-
-volume.oninput = function () {
-	audio.volume = volume.value;
-}
-
-seek.oninput = function () {
-	audio.currentTime = seek.value;
 };
 
 list_modal.onclick = function (e) {
@@ -73,17 +91,42 @@ async function PlayRandomMp3() {
 	ResetAndPlayMp3(filename);
 }
 
-function ResetAndPlayMp3(filename) {
-	audio.src = "/mp3/" + filename;
+function UpdatePlaylistSelection(event) {
+	const elem = event.target;
+
+	const data_type = elem.dataset.type;
+
+	if (data_type === "folder") {
+		let cbs = elem.parentElement.parentElement.querySelectorAll("#mp3-pl-checkbox");
+
+		for (let cb of cbs)
+			cb.checked = elem.checked;
+	}
+	else if (data_type === "file") {
+		let cbs = elem.parentElement.parentElement.querySelectorAll("#mp3-pl-checkbox");
+
+		let check = true;
+
+		for (let cb of cbs)
+			check &= cb.checked;
+
+		elem.parentElement.parentElement.parentElement.querySelector("#mp3-pl-checkbox").checked = check;
+	}
+}
+
+function ResetAndPlayMp3(path) {
+	audio.src = path;
 	audio.load();
 	audio.play();
 
+	let filename = path.split("\\").pop();
+
 	InitMediaMetadata(filename);
 
-	name.innerHTML = filename;
-	name.style.animation = "none";
-	name.offsetHeight;
-	name.style.animation = "marquee 15s linear infinite";
+	name_marquee.innerHTML = filename;
+	name_marquee.style.animation = "none";
+	name_marquee.offsetHeight;
+	name_marquee.style.animation = "marquee 15s linear infinite";
 }
 
 function InitMediaSession() {
@@ -136,12 +179,6 @@ function UpdatePositionState() {
 
 function InitMediaMetadata(filename) {
 	navigator.mediaSession.metadata = new MediaMetadata({
-		title: filename,
-		artist: '^ artist right there btw',
-		album: 'Album Name',
-		artwork: [
-			{ src: 'cover-96x96.png', sizes: '96x96', type: 'image/png' },
-			{ src: 'cover-512x512.png', sizes: '512x512', type: 'image/png' }
-		]
+		title: filename
 	});
 }

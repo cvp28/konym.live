@@ -1,4 +1,5 @@
-﻿<div id="media-player" draggable="true" class="site-theme-border flex-vert flex-justify-center">
+﻿<div id="media-player" draggable="true" class="site-theme-border flex-vert flex-justify-center nodblclick">
+	<script src="/js/mp3player.js" defer></script>
 
 	<dialog id="mp-list-modal" class="drag-disable site-theme-border"
 		
@@ -22,93 +23,12 @@
 
 	<audio preload="metadata" id="audio-src" />
 
-	<div id="media-player-controls" class="flex-horiz">
-		<button id="play"><img class="drag-disable" src="/images/playpause.png"/></button>
-		<button id="random"><img class="drag-disable" src="/images/shuffle.png" /></button>
-		<button id="list"><img class="drag-disable" src="/images/list.png" /></button>
-		<input id="volume" class="drag-disable fill-width" type="range" name="Volume" min="0" max="1" value="0.5" step="0.01" />
+	<div id="mp-controls" class="flex-horiz">
+		<button class="mp3-btn" data-action="play"/>
+		<button class="mp3-btn" data-action="random"/>
+		<button class="mp3-btn" data-action="list"/>
+		<input id="volume-slider" data-action="volume" class="drag-disable fill-width" type="range" name="Volume" min="0" max="1" value="0.5" step="0.01" />
 	</div>
 
-	<input id="seek" class="drag-disable fill-width" type="range" name="Seek" min="0" value="1" step="1" />
-
-	<script src="/js/mp3player.js"></script>
-	<style>
-		#media-player {
-			display: none;
-			position: absolute;
-
-			background: black;
-
-			padding: 10px;
-			min-width: 15vw;
-			z-index: 998;
-		}
-
-		#volume {
-			width: 100%;
-			margin: 0px;
-		}
-
-		#seek {
-			width: 100%;
-			margin: 0px;
-		}
-
-		#void-fill {
-			flex-grow: 1;
-		}
-
-		#play, #random, #list {
-			aspect-ratio: 1/1;
-			max-width: 1cqi;
-			background: none;
-			padding: 0;
-		}
-
-		#play img {
-			height: auto;
-			width: 100%;
-			filter: brightness(0) saturate(100%) invert(99%) sepia(0%) saturate(2734%) hue-rotate(300deg) brightness(108%) contrast(100%);
-		}
-
-		#random img {
-			height: auto;
-			width: 100%;
-			filter: brightness(0) saturate(100%) invert(99%) sepia(0%) saturate(2734%) hue-rotate(300deg) brightness(108%) contrast(100%);
-		}
-
-		#list img {
-			height: auto;
-			width:100%;
-			filter: brightness(0) saturate(100%) invert(99%) sepia(0%) saturate(2734%) hue-rotate(300deg) brightness(108%) contrast(100%);
-		}
-
-		#mp-list-modal {
-			color: burlywood;
-			background: black;
-			
-			opacity: 0;
-			transition: opacity 0.2s ease-in, overlay 0.2s ease-in allow-discrete, display 0.2s linear allow-discrete;
-		}
-
-		#mp-list-modal[open] {
-			opacity: 1.0;
-		}
-
-		@@starting-style {
-			#mp-list-modal {
-				opacity: 0;
-			}
-
-			#mp-list-modal[open] {
-				opacity: 0;
-			}
-		}
-
-		#mp-list-modal::backdrop {
-			background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
-			backdrop-filter: blur(2px); /* Modern blurred background effect */
-			cursor: auto;
-		}
-	</style>
+	<input id="seek-slider" data-action="seek" class="drag-disable fill-width" type="range" name="Seek" min="0" value="1" step="1" />
 </div>

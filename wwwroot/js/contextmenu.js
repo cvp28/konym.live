@@ -4,9 +4,6 @@ const menu = document.getElementById("context-menu");
 const player = document.getElementById("media-player");
 const chat = document.getElementById("chat-badge");
 
-const show_player = document.getElementById("show-player");
-const show_chat = document.getElementById("show-chat");
-
 var ContextX;
 var ContextY;
 
@@ -29,7 +26,7 @@ function HideMenuHandler() {
 }
 
 function IsVisible(element) {
-    return element.style.display == "flex";
+    return element.style.display === "flex";
 }
 
 function Toggle(element) {

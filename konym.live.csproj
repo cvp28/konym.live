@@ -9,11 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\images\imadethis.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Htmx" Version="1.10.0" />
+    <PackageReference Include="Htmx" Version="1.12.0" />
+    <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.477" />
     <PackageReference Include="Markdig" Version="1.1.1" />
     <PackageReference Include="Spectre.Console" Version="0.54.0" />
   </ItemGroup>

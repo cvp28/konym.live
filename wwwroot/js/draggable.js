@@ -1,16 +1,7 @@
 ﻿let offsetX, offsetY;
-//const element = document.getElementById('active-users');
 
 const elements = document.querySelectorAll("[draggable]")
 const elements_nodrag = document.querySelectorAll(".drag-disable");
-
-document.body.addEventListener("dragover", (event) => {
-    event.preventDefault();
-});
-
-document.body.addEventListener("dragenter", (event) => {
-    event.preventDefault();
-});
 
 elements.forEach(element => {
     element.addEventListener('dragstart', (event) => {
@@ -36,6 +27,9 @@ elements.forEach(element => {
     });
 
     element.addEventListener('dblclick', (event) => {
+        if (element.classList.contains('nodblclick'))
+            return;
+
         element.style.position = "";
         element.style.left = "";
         element.style.top = "";

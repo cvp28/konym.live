@@ -1,0 +1,49 @@
+@font-face {
+	font-family: '3dthirteen';
+	src: url('/fonts/woff2/3D-Thirteen-Pixel-Fonts.woff2') format('truetype');
+}
+
+@font-face {
+	font-family: 'PixelPurl';
+	src: url('/fonts/woff2/PixelPurl.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'FutureEarth';
+	src: url('/fonts/woff2/future-earth.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Consolas';
+	src: url('/fonts/ttf/consolas.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Consolas';
+	src: url('/fonts/ttf/consolas-bold.ttf') format('truetype');
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: "Segoe UI";
+	src: url('/fonts/woff2/Segoe UI.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: "Segoe UI";
+	src: url('/fonts/woff2/Segoe UI Bold.woff2') format('woff2');
+	font-weight: 700;
+}
+
+@font-face {
+	font-family: "Segoe UI";
+	src: url('/fonts/woff2/Segoe UI Italic.woff2') format('woff2');
+	font-style: italic;
+}
+
+@font-face {
+	font-family: "Segoe UI";
+	src: url('/fonts/woff2/Segoe UI Bold Italic.woff2') format('woff2');
+	font-weight: 700;
+	font-style: italic;
+}

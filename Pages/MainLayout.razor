@@ -6,70 +6,29 @@
 <head>
     <meta charset="UTF-8" />
     <title>konym.live</title>
-    <link rel="stylesheet" type="text/css" href="/style/body.css"/>
+    <link rel="stylesheet" href="/style/site.min.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico">
-
-    <link rel="stylesheet" href="https://unpkg.com/@@xterm/xterm/css/xterm.css" />
-    <script src="https://unpkg.com/@@xterm/xterm/lib/xterm.js"></script>
-    <script src="https://unpkg.com/@@xterm/addon-fit/lib/addon-fit.js"></script>
-    <script src="https://unpkg.com/@@xterm/addon-attach/lib/addon-attach.js"></script>
 
     <script src="js\draggable.js" defer></script>
     <script src="js\contextmenu.js" defer></script>
 
-    <meta name="htmx-config" content='{"allowScriptTags": true}'>
-
     <!--Prevent blinding FUOC (Flash-of-unstyled-content)-->
     <style>
         html { background-color: black; }
-
-        @@font-face {
-            font-family: '3dthirteen';
-            src: url('/fonts/woff2/3D-Thirteen-Pixel-Fonts.woff2') format('truetype');
-        }
-
-        @@font-face {
-            font-family: 'PixelPurl';
-			src: url('/fonts/woff2/PixelPurl.woff2') format('woff2');
-        }
-
-        @@font-face {
-            font-family: 'FutureEarth';
-            src: url('/fonts/woff2/future-earth.woff2') format('woff2');
-        }
-
-        @@font-face {
-			font-family: "Segoe UI";
-			src: url('/fonts/woff2/Segoe UI.woff2') format('woff2');
-        }
-
-        @@font-face {
-			font-family: "Segoe UI";
-			src: url('/fonts/woff2/Segoe UI Bold.woff2') format('woff2');
-            
-            font-weight: 700;
-        }
-
-        @@font-face {
-			font-family: "Segoe UI";
-			src: url('/fonts/woff2/Segoe UI Italic.woff2') format('woff2');
-            
-            font-style: italic;
-        }
-
-        @@font-face {
-			font-family: "Segoe UI";
-			src: url('/fonts/woff2/Segoe UI Bold Italic.woff2') format('woff2');
-            
-            font-weight: 700;
-            font-style: italic;
-        }
     </style>
     
+    <meta name="htmx-config" content='{"allowScriptTags": true, "history": "reload"}'>
     <HtmxInclude/>
 </head>
 
-<body hx-boost="true" hx-target="#content" hx-swap="outerHTML" hx-indicator="this, #global-loading, #content">
+<body 
+    hx-boost:inherited="true"
+    hx-target:inherited="#content"
+    hx-swap:inherited="outerHTML"
+    hx-indicator:inherited="this, #global-loading, #content"
+    
+    ondragover="event.preventDefault()"
+    ondragenter="event.preventDefault()">
 
     <img id="global-loading" src="/images/aero_spinner.gif"/>
 
@@ -85,8 +44,6 @@
 
         @Content
     </div>
-
-
 </body>
 </html>
 

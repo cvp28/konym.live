@@ -1,0 +1,40 @@
+#chat-badge {
+	display: none;
+	position: absolute;
+	background: black;
+	gap: 10px;
+	z-index: 997;
+	padding: 10px;
+	min-width: 40vw;
+	min-height: 50vh;
+}
+
+#chat-controls {
+	gap: 20px;
+}
+
+#connect-div {
+	flex: 1;
+}
+
+#loading-div {
+	flex: 1;
+}
+
+#terminal {
+	overflow: hidden;
+}
+
+.term-theme {
+	color: springgreen;
+	font-family: Consolas;
+}
+
+.term-btn {
+	all: unset;
+	cursor: pointer;
+}
+
+	.term-btn:hover {
+		font-weight: bold;
+	}

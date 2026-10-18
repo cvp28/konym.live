@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
-using CosmoSlim;
 using Hv2UI;
+using CosmoSlim;
 
 namespace konym.live.textmode.UI;
 
@@ -11,16 +13,26 @@ internal class ChatLayer : Layer
 	[Widget] public InputField ifMsg;
 	[Widget] public TextBox tbChat, tbActiveUsers;
 
+	public static ConcurrentDictionary<string, ChatUser> Users;
+
 	private string ID;
+
+	private static readonly string[] PromptMessages = ["Start talkin'!", "Introduce yourself!", "Say hi!", "Speak up!", "We don't bite :p", "Care to share?", "Let us know what you think!"];
 
 	public ChatLayer(string ID, Hv2App Instance, bool Active) : base(Instance, Active)
 	{
 		this.ID = ID;
 
-		dtOutput = new(OnCustomRender);
+		dtOutput = new(OnCustomRender)
+		{
+			//Visible = false
+		};
 
 		ifMsg = new()
 		{
+			//Visible = false,
+			EmptyMessage = PromptMessages[Random.Shared.Next(PromptMessages.Length)],
+
 			X = 2,
 			Y = 2,
 			Prompt = "> ",
@@ -33,13 +45,13 @@ internal class ChatLayer : Layer
 
 		tbChat = new(0, 4, 88, 24)
 		{
-			Visible = true,
+			//Visible = false,
 			ScrollbarVisible = false
 		};
 
 		tbActiveUsers = new(90, 4, 28, 24)
 		{
-			Visible = true,
+			//Visible = false,
 			ScrollbarVisible = false
 		};
 
@@ -48,6 +60,9 @@ internal class ChatLayer : Layer
 
 	private void OnInput(string Input)
 	{
+		// Randomize playful input prompt
+		ifMsg.EmptyMessage = PromptMessages[Random.Shared.Next(PromptMessages.Length)];
+
 		var Elements = Input.Split([' '], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
 		if (Elements.Length == 0)
@@ -61,12 +76,12 @@ internal class ChatLayer : Layer
 			case "/cya":
 			case "/goodbye":
 			case "/farewell":
-				Globals.DoChatMessage("System", $"{ID} has left the server", Color24.Green, Color24.Yellow);
+				DoChatMessage("System", $"{ID} has left the server", Color24.Green, Color24.Yellow);
 				Instance.SignalExit();
 				break;
 
 			case "/badapple":
-				Globals.DoChatMessage("System", $"{ID} is re-watching bad apple", Color24.Green, Color24.White);
+				DoChatMessage("System", $"{ID} is re-watching bad apple", Color24.Green, Color24.White);
 
 				Instance.Layers["Chat"].Active = false;
 				Instance.Layers["Main"] = new BadAppleLayer(Instance, true);
@@ -77,7 +92,7 @@ internal class ChatLayer : Layer
 				break;
 
 			case "/help":
-				tbChat.WriteLine("konym.live.textmode chat (ported to http/websockets!) - built 8/15/2026");
+				tbChat.WriteLine("textmode.konym.live chat (ported to http/websockets!) - built 9/9/2026");
 				tbChat.WriteLine();
 				tbChat.WriteLine("Client commands are below!");
 				tbChat.WriteLine();
@@ -86,6 +101,9 @@ internal class ChatLayer : Layer
 				tbChat.WriteLine();
 				tbChat.WriteLine("/badapple");
 				tbChat.WriteLine("= replay bad apple intro");
+				tbChat.WriteLine();
+				tbChat.WriteLine("/whoami");
+				tbChat.WriteLine("= prints your current name");
 				tbChat.WriteLine();
 				tbChat.WriteLine("/clear");
 				tbChat.WriteLine("= clear the chat window");
@@ -127,10 +145,11 @@ internal class ChatLayer : Layer
 				}
 
 				Globals.Hv2Instances[User].SignalExit();
+				DoChatMessage("System", $"{User} was kicked", Color24.Green, Color24.Yellow);
 				break;
 
 			default:
-				Globals.DoChatMessage(ID, Input, Color24.Yellow, Color24.White);
+				DoChatMessage(ID, Input, Color24.Yellow, Color24.White);
 				break;
 		}
 	}
@@ -153,16 +172,16 @@ internal class ChatLayer : Layer
 			else
 				tbActiveUsers.WriteLine();
 		}
+	}
 
-		//	var fg = new byte[3];
-		//	Random.Shared.NextBytes(fg);
-
-		//	r.WriteAt((r.Width / 2) - 20, r.Height / 2, Run.Fg(fg[0], fg[1], fg[2]), $"Your random number is {Random.Shared.Next()}");
-
-		//	Index += 1;
-		//	Index %= LoadingChars.Length;
-		//	
-		//	r.WriteAt(0, 0, Color24.Aqua, $"{LoadingChars[Index]}");
+	[MethodImpl(MethodImplOptions.Synchronized)]
+	public static void DoChatMessage(string From, string Message, Color24 FromFG, Color24 MessageFG)
+	{
+		foreach (var kvp in Globals.Hv2Instances)
+		{
+			(kvp.Value.Layers["Chat"] as ChatLayer).tbChat.Write($"{From}", FromFG, Color24.Black);
+			(kvp.Value.Layers["Chat"] as ChatLayer).tbChat.WriteLine($": {Message}", MessageFG, Color24.Black);
+		}
 	}
 
 	public override void OnShow()
@@ -170,4 +189,16 @@ internal class ChatLayer : Layer
 		base.OnShow();
 		Instance.FocusedWidget = ifMsg;
 	}
+}
+
+public class ChatUser
+{
+	public Hv2App Hv2Instance;
+
+	public string IP;
+
+	public string Nickname;
+	public string Room;
+
+	public bool IsAdmin;
 }

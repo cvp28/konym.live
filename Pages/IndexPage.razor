@@ -1,4 +1,5 @@
 ﻿<div id="content" class="flex-vert flex-align-center" align="center">
+    <link rel="stylesheet" href="/style/index.css"/>
 
     <div class="fill-width flex-vert flex-align-center">
         <span style="font-family: '3dthirteen'; font-size: 5cqi;">Home</span>
@@ -9,18 +10,29 @@
 
         <h3>Hello, my name is Konym.</h3>
         <p>
-            Are you the kind of person that others immediately call upon to sort out technical issues? If so, I think we'll get along :)<br />
-            <br />
-            I am currently approaching my mid-20s and am lucky to say that, so far, I've acquired a good job, some cool friends, and a few fun toys. Isn't that about all you can ask for?<br />
-            (I'm only partially joking)<br />
-            <br />
-            My hobbies include coding, riding my motorcycle, gaming, and hanging out with my friends both online and <b><i>in the real world</i></b> :o<br />
-            <br />
-            You may find me out there on the internet from time to time. Be sure to say hi if you do :)<br />
-            <br />
-            I hope to see you around, and thanks for visiting me!
+            I've put together this website as a coding exercise and semi-commitment to learning web development and long-term project maintenance.<br />
+            <br/>
+			This is very much a labor of love, so you'll find some personal effects added in.<br />
+            (music, blog posts, images, etc.)<br />
+            <br/>
+            For concerns surrounding AI usage, please read my AI disclaimer <a href="/ai" style="color: lightgreen">here</a>.
         </p>
-        
+
+        <p style="display: none;">
+            Of course, that's an alias. Maybe one day you'll know my real name.<br />
+            Maybe you already do!<br />
+            <br />
+            Anyways, are you the kind of person that others immediately call upon to sort out technical issues? If so, we'll probably get along.<br />
+            <br />
+            I am a bit of a computer nerd who finally decided, in Feb. 2026, to fulfill a dream of his 14 year-old self by creating and hosting a cool website.<br />
+            <br />
+            Whether you actually agree that any of this is cool is entirely up to you :p<br />
+            <br />
+            My hobbies include coding (no shit), riding my motorcycle, gaming, and hanging out with my friends both online and <b><i>in real life</i></b> :o<br />
+            <br />
+            You may find me out there on the internet from time to time.<br />
+            Be sure to say hi if you do. Thanks for visiting!
+        </p>
     </div>
 
     <div id="content-buttons" class="flex-horiz" style="gap: 10px;">
@@ -41,11 +53,33 @@
         <!--<span class="news-item-date news-item-pinned" style="color: lightgreen;" align="center">Pinned</span>-->
 
         <div class="news-item">
+            <span class="news-item-date" align="center">10-10-2026</span>
+            <p class="news-item-content" align="left">
+                • Mp3Player list UI has been slightly modified to accomodate a forthcoming playlist feature. Stay tuned.<br />
+                • Chat app now attempts to use hardware-accelerated rendering, if available. Say goodbye to laggy chat window dragging! (depending on your setup :p)<br />
+                • Optimized memory usage and tweaked loading behavior of the chat app.<br />
+                • Updated site to HTMX 4.<br />
+                • All common CSS (body, fonts, etc.) now consolidate into a single site.min.css to minimize network traffic.<br />
+                • Updated many pages to use separate JS and CSS files instead of inline logic/styling. Hopefully the DOM is a little more readable now.<br />
+                • Added AI Usage disclaimer page.
+            </p>
+        </div>
+
+        <div class="news-item">
+            <span class="news-item-date" align="center">09-09-2026</span>
+            <p class="news-item-content" align="left">
+                • Updated the chat window from its generic 'programmer' interface to something actually styled.<br/>
+                • Fixed glitch for chat window and mp3 player where the element would reset itself to the top-left of the screen whenever double clicking.<br />
+                • Song selector list in the mp3 player now has a folder view to select songs. It also no longer refreshes the list every time it is opened, so expanded/collapsed folders will now persist.
+            </p>
+        </div>
+
+        <div class="news-item">
             <span class="news-item-date" align="center">08-15-2026</span>
             <p class="news-item-content" align="left">
                 • Due to space and layout constraints, the Mp3 Player and newly added Chat window are now available via right-clicking anywhere on the page (navbar and content area).<br />
-                • The little-known konym.live.textmode SSH application has been ported to work over websockets! The site uses xterm.js to interact with the backend app instance.<br />
-                • The konym.live.textmode app features an ASCII rendition of Bad Apple, skippable by pressing <span style="color: cadetblue">[ENTER]</span> as well as an anonymous chat room. Type <span style="color:cadetblue">/help</span> for a basic list of commands.
+                • The little-known textmode.konym.live SSH application has been ported to work over websockets! The site uses xterm.js to interact with the backend app instance.<br />
+                • The textmode.konym.live app features an ASCII rendition of Bad Apple, skippable by pressing <span style="color: cadetblue">[ENTER]</span> as well as an anonymous chat room. Type <span style="color:cadetblue">/help</span> for a basic list of commands.
             </p>
         </div>
 
@@ -214,59 +248,4 @@
             </p>
         </div>
     </div>
-
-    <style>
-        #content {
-            gap: 20px;
-        }
-
-        #content-introduction {
-            max-width: 40%;
-            font-size: 1cqi;
-        }
-
-        #content-news {
-            position: relative;
-
-            max-height: round(nearest, 25vh, 1px);
-            max-width: round(nearest, 75cqi, 1px);
-            width: round(nearest, 75cqi, 1px);
-
-            overflow: auto;
-            padding: 0px 10px;
-
-            scrollbar-width: none;
-            scroll-snap-type: y mandatory;
-
-            color: burlywood;
-            background-color: black;
-            
-            border: 2px solid white;
-            border-image: linear-gradient(190deg, rgba(0, 65, 115, 0.5), rgba(196, 177, 0, 0.5)) 1;
-        }
-
-        .news-item {
-            min-height: round(nearest, 100%, 1px);
-            min-width: round(nearest, 100%, 1px);
-            flex-shrink: 0;
-            scroll-snap-align: center;
-            scroll-snap-stop: always;
-            content-visibility: auto;
-        }
-
-        .news-item-date {
-            font-family: '3dthirteen';
-            font-size: 3cqi;
-        }
-
-        .news-item-content {
-            font-size: 1cqi;
-        }
-
-        .news-item-pinned {
-            position: absolute;
-            top: 0px;
-            right: 0px;
-        }
-    </style>
 </div>

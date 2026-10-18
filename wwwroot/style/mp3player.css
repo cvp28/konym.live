@@ -1,0 +1,130 @@
+#media-player {
+	display: none;
+	position: absolute;
+	background: black;
+	padding: 10px;
+	min-width: 15vw;
+	z-index: 998;
+}
+
+#volume-slider {
+	width: 100%;
+	margin: 0px;
+}
+
+#seek-slider {
+	width: 100%;
+	margin: 0px;
+}
+
+#void-fill {
+	flex-grow: 1;
+}
+
+.mp3-btn {
+	background-size: 25px 25px;
+	background-position: center;
+	background-repeat: no-repeat;
+	
+	height: 25px;
+	width: 30px;
+
+	filter: invert(100%);
+	border: 1px solid #ccc;
+	cursor: pointer;
+}
+
+.mp3-btn:active {
+	transform: scale(0.90);
+}
+
+	.mp3-btn[data-action="play"] {
+		background-image: url("/images/playpause.png");
+	}
+
+	.mp3-btn[data-action="random"] {
+		background-image: url("/images/shuffle.png");
+	}
+
+	.mp3-btn[data-action="list"] {
+		background-image: url("/images/list.png");
+	}
+
+#mp-list-modal {
+	color: burlywood;
+	background: black;
+	opacity: 0;
+	transition: opacity 0.2s ease-in, overlay 0.2s ease-in allow-discrete, display 0.2s linear allow-discrete;
+	width: 50%;
+	height: 80%;
+	overflow: auto;
+	text-wrap: nowrap;
+}
+
+	#mp-list-modal[open] {
+		opacity: 1.0;
+	}
+
+@starting-style {
+	#mp-list-modal {
+		opacity: 0;
+	}
+
+		#mp-list-modal[open] {
+			opacity: 0;
+		}
+}
+
+#mp-list-modal::backdrop {
+	background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+	backdrop-filter: blur(2px); /* Modern blurred background effect */
+	cursor: auto;
+}
+
+.mp3-item {
+	all: unset;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	border: none;
+	color: burlywood;
+	background-color: rgba(0, 0, 0, 0);
+	z-index: 999;
+}
+
+.mp3-item:hover {
+	cursor: pointer;
+	color: aquamarine;
+	background-color: black;
+}
+
+#mp3-pl-checkbox {
+	position: absolute;
+	left: 0px;
+}
+
+details::details-content {
+	margin-left: 1.5rem;
+}
+
+summary {
+	list-style: none;
+}
+
+	summary::-webkit-details-marker {
+		display: none;
+	}
+
+	summary::before {
+		content: "📁 ";
+		display: inline-block;
+	}
+
+/* Change to an open folder icon when opened */
+details[open] > summary::before {
+	content: "📂 ";
+}
+
+summary:hover {
+	cursor: pointer;
+	color: aquamarine;
+	background-color: black;
+}

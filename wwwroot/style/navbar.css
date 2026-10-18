@@ -1,0 +1,65 @@
+#nav {
+	border: 2px solid rgba(196, 255, 0, 0.5);
+	background: linear-gradient(190deg,rgba(0, 65, 115, 0.54) 0%, rgba(196, 177, 0, 0.34) 100%);
+	font-family: 'Segoe UI';
+	container-type: inline-size;
+	flex: 4;
+	gap: 0.5cqi;
+	min-width: 11cqi;
+	padding: 20px;
+}
+
+#logo {
+	width: stretch;
+}
+
+#navbar-header {
+	font-family: '3dthirteen';
+	font-size: 20cqi;
+	transition: text-shadow 0.3s ease;
+}
+
+	#navbar-header:hover {
+		cursor: pointer;
+		text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF;
+	}
+
+#navlist {
+	width: stretch;
+}
+
+.navlink {
+	color: burlywood;
+	background-color: black;
+	border: 1px solid white;
+	border-image: linear-gradient(190deg,rgba(0, 65, 115, 1), rgba(196, 177, 0, 1)) 1;
+	text-align: center;
+	font-size: 7cqi;
+	font-weight: bold;
+	text-decoration: none;
+	padding: 5px;
+	margin: 5px 0px;
+	display: block;
+}
+
+#button-image {
+	width: 88px;
+	height: 31px;
+}
+
+	#button-image:hover {
+		cursor: pointer;
+	}
+
+#void-fill {
+	flex-grow: 1;
+}
+
+.active {
+	text-decoration: underline;
+}
+
+.navlink:hover {
+	background: transparent;
+	border: 1px solid white;
+}

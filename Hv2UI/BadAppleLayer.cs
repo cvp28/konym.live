@@ -40,12 +40,20 @@ internal class BadAppleLayer : Layer
 			for (int i = 0; i < frame_lines.Length; i++)
 			{
 				r.WriteAt(0, i, frame_lines[i]);
+
+			}
+
+			if (f < 120)
+			{
+				r.WriteAt(83, 1, "Press [ENTER]");
+				r.WriteAt(83, 2, "to skip");
 			}
 
 			if (f == Globals.BadAppleFrames.Length - 1)
 			{
 				Active = false;
 				Instance.Layers["Chat"].Active = true;
+				return;
 			}
 			else
 			{

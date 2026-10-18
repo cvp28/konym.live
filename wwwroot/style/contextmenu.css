@@ -1,0 +1,20 @@
+#context-menu {
+	position: absolute;
+	display: none;
+	z-index: 999;
+	padding: 5px;
+	background: black;
+}
+
+.context-btn {
+	border: none;
+	text-align: left;
+	color: burlywood;
+	background-color: black;
+}
+
+	.context-btn:hover {
+		cursor: pointer;
+		color: aquamarine;
+		background-color: black;
+	}

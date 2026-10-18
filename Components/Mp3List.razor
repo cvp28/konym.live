@@ -1,28 +1,71 @@
-﻿<form method="dialog" class="drag-disable">
+﻿
+<div class="flex-horiz fill-width flex-justify-center flex-align-center">
+	<button onclick="list_modal.dispatchEvent(new Event('mp-list-show-event'))">Refresh</button>
+</div>
+
+<form id="mp3-form" method="dialog" class="flex-vert drag-disable">
 	@{
-		var Mp3s = Globals.Mp3Files.ToArray();
-		Mp3s.Sort();
+		GenerateList(@".\wwwroot\mp3", true);
 
-		foreach (var mp3 in Mp3s)
+		string GenerateList(string p, bool Open)
 		{
-			<div class="mp3-item flex-horiz">
-			<button type="submit" onclick="ResetAndPlayMp3('@mp3')">@mp3</button>
-			</div>
-		}
+			var dirs = Directory.EnumerateDirectories(p);
+			var files = Directory.EnumerateFiles(p);
 
+			var info = new DirectoryInfo(p);
+
+			if (Open)
+			{
+				<details open>
+					<summary>
+						<input id="mp3-pl-checkbox" type="checkbox" data-type="folder" onchange="UpdatePlaylistSelection(event)" />
+						@info.Name
+					</summary>
+					@foreach (var dir in dirs)
+						@GenerateList(dir, false)
+					
+					<div class="flex-vert">
+					@foreach (var file in files)
+					{
+						@if (!file.EndsWith(".mp3"))
+							continue;
+
+						// ResetAndPlayMp3('@file.Substring(9).Replace(@"\", @"\\")')
+
+						<div class="mp3-item flex-horiz" data-path="@file.Remove(0, 9)">
+							<input id="mp3-pl-checkbox" type="checkbox" data-type="file" onchange="UpdatePlaylistSelection(event)" />
+							<span onclick="ResetAndPlayMp3(event.target.parentElement.getAttribute('data-path'))">@Path.GetFileName(file)</span>
+						</div>
+					}
+					</div>
+				</details>
+			}
+			else
+			{
+				<details class="flex-vert">
+					<summary>
+						<input id="mp3-pl-checkbox" type="checkbox" data-type="folder" onchange="UpdatePlaylistSelection(event)" />
+						@info.Name
+					</summary>
+					@foreach (var dir in dirs)
+						@GenerateList(dir, false)
+					
+					<div class="flex-vert">
+					@foreach (var file in files)
+					{
+						@if (!file.EndsWith(".mp3"))
+							continue;
+
+						<div class="mp3-item flex-horiz" data-path="@file.Remove(0, 9)">
+							<input id="mp3-pl-checkbox" type="checkbox" data-type="file" onchange="UpdatePlaylistSelection(event)" />
+							<span onclick="ResetAndPlayMp3(event.target.parentElement.getAttribute('data-path'))">@Path.GetFileName(file)</span>
+						</div>
+					}
+					</div>
+				</details>
+			}
+
+			return string.Empty;
+		}
 	}
-
-	<style>
-		.mp3-item button {
-			border: none;
-			color: burlywood;
-			background-color: rgba(0, 0, 0, 0);
-		}
-
-		.mp3-item button:hover {
-			cursor: pointer;
-			color: aquamarine;
-			background-color: black;
-		}
-	</style>
 </form>

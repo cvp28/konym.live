@@ -1,11 +1,11 @@
-using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using System.Diagnostics;
+using System.Collections.Concurrent;
 
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Spectre.Console;
 using Utf8StringInterpolation;
 
-using CosmoSlim;
 using Hv2UI;
 
 using konym.live;
@@ -28,6 +27,11 @@ builder.Services.AddRazorComponents();
 builder.Services.AddAntiforgery();
 builder.Services.AddSingleton<ConcurrentBag<User>>();
 
+builder.Services.AddWebOptimizer(pipeline =>
+{
+	pipeline.AddCssBundle("/style/site.min.css", "/style/mp3player.css", "/style/chat.css", "/style/contextmenu.css", "/style/fonts.css", "/style/navbar.css", "/style/body.css");
+});
+
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
 	options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -41,31 +45,30 @@ app.UseAntiforgery();
 app.UseForwardedHeaders();
 app.UseWebSockets();
 
+app.UseWebOptimizer();
 app.UseStaticFiles(new StaticFileOptions()
 {
-	FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
-	RequestPath = ""
+	FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "mp3")),
+	RequestPath = "/wwwroot/mp3"
 });
 
 app.MapStaticAssets();
 
-/*
-app.MapGet("/bedroom-light-on", (HttpContext ctx) =>
+app.MapGet("/bedroom-light-on", async (HttpContext ctx) =>
 {
 	using var client = new UdpClient("wiz_bc4853.lan", 38899);
 
 	var bytes = Encoding.UTF8.GetBytes("""{"id":1,"method":"setState","params":{"state":true}}""");
-	client.Send(bytes, bytes.Length);
+	await client.SendAsync(bytes, bytes.Length);
 });
 
-app.MapGet("/bedroom-light-off", (HttpContext ctx) =>
+app.MapGet("/bedroom-light-off", async (HttpContext ctx) =>
 {
 	using var client = new UdpClient("wiz_bc4853.lan", 38899);
 
 	var bytes = Encoding.UTF8.GetBytes("""{"id":1,"method":"setState","params":{"state":false}}""");
-	client.Send(bytes, bytes.Length);
+	await client.SendAsync(bytes, bytes.Length);
 });
-*/
 
 app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList) =>
 {
@@ -103,34 +106,34 @@ app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList
 
 	AnsiConsole.Write(table);
 
-	return $"""<span id="badge">🌎 {(TotalVisits > 1 ? $"{TotalVisits} visits" : $"{TotalVisits} visit")}, {ActiveUsers.Count()} online now!</span>""";
+	return Results.Text($"""<span id="badge">🌎 {(TotalVisits > 1 ? $"{TotalVisits} visits" : $"{TotalVisits} visit")}, {ActiveUsers.Count()} online now!</span>""", "text/html", Encoding.UTF8);
 });
 
-app.MapGet("/frag/random-song", (HttpContext ctx) =>
-{
-	return Globals.RandomMp3File;
-});
+app.MapGet("/frag/random-song", () => Globals.RandomMp3File);
 
 app.MapGet("/frag/get-server-power-info", (HttpContext ctx) =>
 {
 	var uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;
 	Kernel32.GetSystemPowerStatus(out var status);
 
-	return
-	$"""
-	{uptime.TotalHours:F0} hours, {uptime.Minutes} minutes, {uptime.Seconds} seconds<br />
-	{(status.BatteryLifePercent != 255 ? $"{status.BatteryLifePercent}%" : "N/A")}<br />
-	{(status.ACLineStatus == 1 ? "Yes" : "No")}
-	""";
+	return Results.Text(
+		$"""
+		{uptime.TotalHours:F0} hours, {uptime.Minutes} minutes, {uptime.Seconds} seconds<br />
+		{(status.BatteryLifePercent != 255 ? $"{status.BatteryLifePercent}%" : "N/A")}<br />
+		{(status.ACLineStatus == 1 ? "Yes" : "No")}
+		""",
+		"text/html",
+		Encoding.UTF8
+		);
 });
 
-app.MapGet("/frag/mp3-list", (HttpContext ctx) =>
-{
-	StringBuilder content = new();
+app.MapGet("/frag/mp3-list", (HttpContext ctx) => new RazorComponentResult<Mp3List>());
 
-	//return string.Join(',', Globals.Mp3Files.ToArray());
-	return new RazorComponentResult<Mp3List>();
-});
+app.MapGet("/frag/xterm-core", () => Results.Redirect("https://esm.unpkg.com/@xterm/xterm/lib/xterm.js"));
+app.MapGet("/frag/xterm-fit-addon", () => Results.Redirect("https://esm.unpkg.com/@xterm/addon-fit/lib/addon-fit.js"));
+app.MapGet("/frag/xterm-attach-addon", () => Results.Redirect("https://esm.unpkg.com/@xterm/addon-attach/lib/addon-attach.js"));
+app.MapGet("/frag/xterm-webgl-addon", () => Results.Redirect("https://esm.unpkg.com/@xterm/addon-webgl/lib/addon-webgl.js"));
+app.MapGet("/frag/xterm-canvas-addon", () => Results.Redirect("https://esm.unpkg.com/@xterm/addon-canvas/lib/addon-canvas.js"));
 
 app.Map("/chat-ws", async (HttpContext ctx) =>
 {
@@ -256,6 +259,7 @@ app.Map("/chat-ws", async (HttpContext ctx) =>
 
 // Simple pages
 app.MapGet("/", APIUtils.DefaultPartialOrFullHandler<IndexPage>);
+app.MapGet("/ai", APIUtils.DefaultPartialOrFullHandler<AIPage>);
 app.MapGet("/about", APIUtils.DefaultPartialOrFullHandler<AboutPage>);
 app.MapGet("/zones", APIUtils.DefaultPartialOrFullHandler<ZonesPage>);
 app.MapGet("/i-made-this", APIUtils.DefaultPartialOrFullHandler<IMadeThisPage>);
@@ -322,10 +326,10 @@ public static class Globals
 		while (true)
 		{
 			Mp3Files.Clear();
-			var files = Directory.GetFiles(@".\wwwroot\mp3\");
+			var files = Directory.GetFiles(@".\wwwroot\mp3\", "*.mp3", SearchOption.AllDirectories);
 
 			foreach (var file in files)
-				Mp3Files.Add(Path.GetFileName(file));
+				Mp3Files.Add(file[9..]);
 
 			await Task.Delay(5000);
 		}
@@ -333,34 +337,16 @@ public static class Globals
 
 	public static void LoadBadAppleFrames()
 	{
-		//var FramePaths = Directory.GetFiles(@".\ServerContent\bad_apple_frames_ascii");
+#if DEBUG
 		var FramePaths = Directory.GetFiles(@"D:\konym.live\TextModeApp\bad_apple_frames_ascii");
+#else
+		var FramePaths = Directory.GetFiles(@".\ServerContent\bad_apple_frames_ascii");
+#endif
 		BadAppleFrames = new string[FramePaths.Length];
 
 		for (int i = 0; i < FramePaths.Length; i++)
 			BadAppleFrames[i] = File.ReadAllText(FramePaths[i]);
 	}
-
-	[MethodImpl(MethodImplOptions.Synchronized)]
-	public static void DoChatMessage(string From, string Message, Color24 FromFG, Color24 MessageFG)
-	{
-		foreach (var kvp in Hv2Instances)
-		{
-			(kvp.Value.Layers["Chat"] as ChatLayer).tbChat.Write($"{From}", FromFG, Color24.Black);
-			(kvp.Value.Layers["Chat"] as ChatLayer).tbChat.WriteLine($": {Message}", MessageFG, Color24.Black);
-		}
-	}
-}
-
-public class User
-{
-	public IPAddress IP;
-	public string Country;
-	public string Where;
-	public DateTime LastPing;
-	public bool Valid;
-
-	public bool Active => Valid && (DateTime.Now - LastPing).TotalSeconds < 30;
 }
 
 public static partial class Kernel32
@@ -379,4 +365,15 @@ public static partial class Kernel32
 		public int BatteryLifeTime;
 		public int BatteryFullLifeTime;
 	}
+}
+
+public class User
+{
+	public IPAddress IP;
+	public string Country;
+	public string Where;
+	public DateTime LastPing;
+	public bool Valid;
+
+	public bool Active => Valid && (DateTime.Now - LastPing).TotalSeconds < 30;
 }

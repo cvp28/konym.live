@@ -1,88 +1,21 @@
-﻿
-<div id="chat-badge" draggable="true" class="site-theme-border flex-vert flex-align-center">
+﻿<div id="chat-badge" draggable="true" class="site-theme-border flex-vert flex-align-center nodblclick">
+	<script src="/js/chat.js" defer></script>
+	<link id="xterm-css" rel="preload" href="https://unpkg.com/@@xterm/xterm/css/xterm.css" as="style"/>
 	
-	<div id="chat-controls" class="flex-horiz fill-width">
-		<span class="fill-width">Chat!</span>
+	<div id="chat-controls" class="term-theme flex-horiz fill-width">
+		<span class="fill-width"> textmode.konym.live</span>
+		<button class="term-btn" onclick="DisconnectFromChat();">[Disconnect]</button>
+	</div>
 
-		<button class="fill-width" onclick="ConnectToChat();">Open</button>
-		<button class="fill-width" onclick="ClearTerminal();">Clear</button>
-		<button class="fill-width" onclick="if (ws.readyState !== 3) ws.close();">Close</button>
-		<button class="fill-width" onclick="fit.fit();">Fit</button>
+	<div id="connect-div" class="term-theme flex-vert flex-align-center flex-justify-center">
+		<button class="term-btn" onclick="ConnectToChat();">[Connect to Chat]</button>
+		<br />
+		<button class="term-btn" onclick="Toggle(chat);">[Close Window]</button>
+	</div>
+
+	<div id="loading-div" style="display: none;" class="term-theme">
+		<span>Please wait...</span>
 	</div>
 
 	<div id="terminal" />
-
-	<script>
-		const term = new Terminal({
-			cols: 120,
-			rows: 30
-		});
-		const fit = new FitAddon.FitAddon();
-
-		var ws;
-
-		term.loadAddon(fit);
-		term.open(document.getElementById('terminal'));
-
-		term.onWriteParsed(function() {
-			term.scrollToBottom();
-		});
-
-
-		function ConnectToChat()
-		{
-			ClearTerminal();
-
-			// If we're already connected, return
-			if (ws && ws.readyState === 1)
-				return;
-
-			ws = new WebSocket(`ws://${location.host}/chat-ws`);
-
-			ws.onopen = function(event) {
-				const attach = new AttachAddon.AttachAddon(ws);
-
-				term.loadAddon(attach);
-				term.focus();
-			};
-
-			ws.onclose = function(event) {
-				ClearTerminal();
-			}
-		}
-
-		function ClearTerminal() {
-			term.write('\x1b[?25l'); // hide cursor
-			term.write('\x1b[2J'); // clear entire buffer
-			term.write('\x1b[0m'); // reset colors
-		}
-	</script>
-
-	<style>
-		#chat-badge {
-			display: none;
-			position: absolute;
-
-			background: black;
-
-			z-index: 997;
-			padding: 10px;
-			padding-bottom: 0px;
-			gap: 20px;
-		}
-
-		#terminal {
-			overflow: hidden;
-			width: 100%;
-			height: 100%;
-
-			/*
-			min-width: 15vw;
-			max-width: 15vw;
-
-			min-height: 20vh;
-			max-height: 20vh;
-			*/
-		}
-	</style>
 </div>
