@@ -24,34 +24,24 @@ using konym.live.textmode.UI;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
-builder.Services.AddAntiforgery();
 builder.Services.AddSingleton<ConcurrentBag<User>>();
-
 builder.Services.AddWebOptimizer(pipeline =>
 {
-	pipeline.AddCssBundle("/style/site.min.css", "/style/mp3player.css", "/style/chat.css", "/style/contextmenu.css", "/style/fonts.css", "/style/navbar.css", "/style/body.css");
+	pipeline.AddCssBundle("/style/site.min.css",
+		"/style/contextmenu.css",
+		"/style/mp3player.css",
+		"/style/chat.css",
+		"/style/body.css",
+		"/style/fonts.css",
+		"/style/navbar.css");
+
+	pipeline.MinifyCssFiles();
 });
 
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-	options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-
-	options.KnownIPNetworks.Clear();
-	options.KnownProxies.Clear();
-});
 var app = builder.Build();
-
-app.UseAntiforgery();
-app.UseForwardedHeaders();
 app.UseWebSockets();
-
 app.UseWebOptimizer();
-app.UseStaticFiles(new StaticFileOptions()
-{
-	FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "mp3")),
-	RequestPath = "/wwwroot/mp3"
-});
-
+app.UseStaticFiles();
 app.MapStaticAssets();
 
 app.MapGet("/bedroom-light-on", async (HttpContext ctx) =>

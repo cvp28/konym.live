@@ -115,7 +115,8 @@ function UpdatePlaylistSelection(event) {
 }
 
 function ResetAndPlayMp3(path) {
-	audio.src = path;
+	// adding date.now to force the browser to always fetch the file from the origin server
+	audio.src = `${path}?t=${Date.now()}`;
 	audio.load();
 	audio.play();
 
