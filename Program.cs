@@ -1,26 +1,23 @@
+using Hv2UI;
+using konym.live;
+using konym.live.Components;
+using konym.live.Pages;
+using konym.live.Pages.Testing;
+using konym.live.Pages.Zones;
+using konym.live.textmode.UI;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Options;
+using Spectre.Console;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
-using System.Text;
-using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using System.Collections.Concurrent;
-
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Http.HttpResults;
-
-using Spectre.Console;
+using System.Runtime.InteropServices;
+using System.Text;
 using Utf8StringInterpolation;
-
-using Hv2UI;
-
-using konym.live;
-using konym.live.Pages;
-using konym.live.Pages.Zones;
-using konym.live.Pages.Testing;
-using konym.live.Components;
-using konym.live.textmode.UI;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
@@ -38,11 +35,25 @@ builder.Services.AddWebOptimizer(pipeline =>
 	pipeline.MinifyCssFiles();
 });
 
+// Needed for the active users counter to work
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+	options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+
+	options.ForwardedForHeaderName = "CF-Connecting-IP";
+
+	// Clear default restrictions if your proxy/tunnel isn't using standard loopback defaults
+	// Warning: Only do this if your app is strictly firewalled from direct public access
+	options.KnownIPNetworks.Clear();
+	options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
 app.UseWebSockets();
 app.UseWebOptimizer();
 app.UseStaticFiles();
 app.MapStaticAssets();
+app.UseForwardedHeaders();
 
 app.MapGet("/bedroom-light-on", async (HttpContext ctx) =>
 {

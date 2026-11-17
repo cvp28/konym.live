@@ -3,8 +3,11 @@
 const name_marquee = document.getElementById("media-name");
 const list_modal = document.getElementById("mp-list-modal");
 
+// Just a list of paths with filenames for songs the user wants to hear in sequence.
+let playlist = [];
 let refresh_modal = true;
 
+ClearDiscordActivity();
 InitMediaSession();
 
 audio.volume = document.getElementById("volume-slider").value;
@@ -23,7 +26,7 @@ function OnMp3Input(event) {
 			break;
 
 		case "list":
-			DoList();
+			ShowList();
 			break;
 
 		case "volume":
@@ -32,6 +35,9 @@ function OnMp3Input(event) {
 
 		case "seek":
 			audio.currentTime = document.getElementById("seek-slider").value;
+
+			if (!audio.paused)
+				SetDiscordActivity();
 			break;
 	}
 }
@@ -39,13 +45,15 @@ function OnMp3Input(event) {
 function PlayPause() {
 	if (audio.paused) {
 		audio.play();
+		SetDiscordActivity();
 	}
 	else {
 		audio.pause();
+		ClearDiscordActivity();
 	}
 }
 
-function DoList() {
+function ShowList() {
 	list_modal.showModal();
 
 	if (refresh_modal) {
@@ -64,6 +72,8 @@ audio.ontimeupdate = function () {
 };
 
 audio.onended = function () {
+	ClearDiscordActivity();
+
 	document.getElementById("seek-slider").value = 0;
 	audio.currentTime = 0;
 };
@@ -114,13 +124,15 @@ function UpdatePlaylistSelection(event) {
 	}
 }
 
+let filename;
+
 function ResetAndPlayMp3(path) {
 	// adding date.now to force the browser to always fetch the file from the origin server
 	audio.src = `${path}?t=${Date.now()}`;
 	audio.load();
 	audio.play();
 
-	let filename = path.split("\\").pop();
+	filename = path.split("\\").pop();
 
 	InitMediaMetadata(filename);
 
@@ -128,6 +140,8 @@ function ResetAndPlayMp3(path) {
 	name_marquee.style.animation = "none";
 	name_marquee.offsetHeight;
 	name_marquee.style.animation = "marquee 15s linear infinite";
+
+	SetDiscordActivity();
 }
 
 function InitMediaSession() {
@@ -166,6 +180,31 @@ function InitMediaSession() {
 	audio.addEventListener('timeupdate', UpdatePositionState);
 	audio.addEventListener('ratechange', UpdatePositionState);
 	audio.addEventListener('durationchange', UpdatePositionState);
+}
+
+function SetDiscordActivity() {
+	const elapsedTimeMs = Math.ceil(audio.currentTime * 1000);
+
+	window.postMessage({
+		type: "SET_DISCORD_RPC",
+		payload: {
+			application_id: "1570619339789574244",
+			name: "konym.live",
+			type: 2,
+			details: "Chillin to mp3's 🎶",
+			state: `▶️ ${filename}`,
+			timestamps: {
+				start: Date.now() - elapsedTimeMs
+			}
+		}
+	}, "*");
+}
+
+function ClearDiscordActivity() {
+	window.postMessage({
+		type: "SET_DISCORD_RPC",
+		payload: null
+	}, "*");
 }
 
 function UpdatePositionState() {

@@ -1,17 +1,20 @@
 ﻿<div id="content" class="flex-vert flex-align-center" align="center">
+    <link rel="stylesheet" href="/style/zones.css" />
+
+    <div class="fill-width flex-horiz">
+        <span class="fill-width" style="font-family: '3dthirteen'; font-size: 5cqi;">Cars and Bikes Zone</span>
+    </div>
 
     <div class="fill-width">
-        <span style="font-family: '3dthirteen'; font-size: 5cqi;">Cars and Bikes Zone</span>
         <hr />
     </div>
 
-    <div id="introduction">
+    <div id="zone-root" class="flex-vert fill-width fill-height">
+        <a class="zone-btn glowing-btn flex-horiz flex-justify-center flex-align-center" style="height: max-content;" href="/zones">Back to Zones</a>
+        @ZoneRootContent
     </div>
-
 </div>
 
-<style>
-    #introduction {
-        font-size: 1cqi;
-    }
-</style>
+@code {
+    [Parameter] public RenderFragment ZoneRootContent { get; set; }
+}

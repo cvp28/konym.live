@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -7,6 +7,16 @@
 	<ServerGarbageCollection>false</ServerGarbageCollection>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\mp3\**\*.mp3" />
+    <Content Remove="ServerContent\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\mp3\**\*.mp3" />
+	<None Include="ServerContent\**\*" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Htmx" Version="1.12.0" />
@@ -34,21 +44,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ServerContent\life-topics\tbd_03-09-2026.md">
+    <Content Update="wwwroot\rpc_bridge.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ServerContent\tech-topics\Shadez 2_05-13-2026.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ServerContent\tech-topics\Bigger Updates!_03-23-2026.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ServerContent\tech-topics\Updates!_03-14-2026.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ServerContent\tech-topics\Introduction_03-08-2026.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
 
 </Project>
