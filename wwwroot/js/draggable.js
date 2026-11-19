@@ -19,7 +19,7 @@ elements.forEach(element => {
     });
 
     element.addEventListener('dragend', (event) => {
-        event.target.style.cursor = 'grab';
+        event.target.style.cursor = 'auto';
         event.target.style.opacity = '1.0';
 
         event.target.style.left = `${event.clientX - offsetX}px`;
@@ -40,6 +40,11 @@ elements_nodrag.forEach(element => {
     element.draggable = true;
 
     element.ondragstart = event => {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    element.ondragend = event => {
         event.preventDefault();
         event.stopPropagation();
     }

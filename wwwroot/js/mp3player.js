@@ -6,6 +6,8 @@ const list_modal = document.getElementById("mp-list-modal");
 // Just a list of paths with filenames for songs the user wants to hear in sequence.
 let playlist = [];
 let refresh_modal = true;
+let folder;
+let filename;
 
 ClearDiscordActivity();
 InitMediaSession();
@@ -97,8 +99,8 @@ async function PlayRandomMp3() {
 	if (!response.ok)
 		throw new Error("Failed to fetch random song via /frag/random-song");
 
-	const filename = await response.text();
-	ResetAndPlayMp3(filename);
+	const path = await response.text();
+	ResetAndPlayMp3(path);
 }
 
 function UpdatePlaylistSelection(event) {
@@ -124,17 +126,18 @@ function UpdatePlaylistSelection(event) {
 	}
 }
 
-let filename;
-
 function ResetAndPlayMp3(path) {
 	// adding date.now to force the browser to always fetch the file from the origin server
 	audio.src = `${path}?t=${Date.now()}`;
 	audio.load();
 	audio.play();
 
-	filename = path.split("\\").pop();
+	let elems = path.split("\\");
 
-	InitMediaMetadata(filename);
+	filename = elems.pop();
+	folder = elems.join('\\');
+
+	SetMediaMetadata(filename);
 
 	name_marquee.innerHTML = filename;
 	name_marquee.style.animation = "none";
@@ -191,8 +194,8 @@ function SetDiscordActivity() {
 			application_id: "1570619339789574244",
 			name: "konym.live",
 			type: 2,
-			details: "Chillin to mp3's 🎶",
-			state: `▶️ ${filename}`,
+			details: `▶️ ${filename}`,
+			state: `📂 ${folder}`,
 			timestamps: {
 				start: Date.now() - elapsedTimeMs
 			}
@@ -217,7 +220,7 @@ function UpdatePositionState() {
 	}
 }
 
-function InitMediaMetadata(filename) {
+function SetMediaMetadata(filename) {
 	navigator.mediaSession.metadata = new MediaMetadata({
 		title: filename
 	});

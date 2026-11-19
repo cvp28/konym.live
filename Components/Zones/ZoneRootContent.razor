@@ -1,14 +1,18 @@
 ﻿
 <div id="zone-topics" class="flex-vert fill-width fill-height">
 
-    @if (HasArticle)    { <ArticleView TopicHtml="@TopicHtml" ZoneName="@ZoneName" /> }
-    else                { <ArticleList Topics="@APIUtils.GetTopics(ZoneName)" ZoneName="@ZoneName"/> }
+    @if (HasArticle)    { <ArticleView TopicHtml="@TopicHtml" ZoneVal="@ZoneVal" /> }
+    else                { <ArticleList Topics="@APIUtils.GetTopics(ZoneVal)" ZoneVal="@ZoneVal"/> }
 
 </div>
 
 @code {
-    [Parameter] public string ZoneName { get; set; }
+    [Parameter]
+    public Zone ZoneVal { get; set; }
 
-    [Parameter] public bool HasArticle { get; set; }
-    [Parameter] public MarkupString TopicHtml { get; set; }
+    [Parameter]
+    public bool HasArticle { get; set; }
+
+    [Parameter]
+    public MarkupString TopicHtml { get; set; }
 }

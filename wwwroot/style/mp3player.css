@@ -88,6 +88,7 @@
 	color: burlywood;
 	background-color: rgba(0, 0, 0, 0);
 	z-index: 999;
+	width: min-content;
 }
 
 .mp3-item:hover {
@@ -107,6 +108,7 @@ details::details-content {
 
 summary {
 	list-style: none;
+	width: min-content;
 }
 
 	summary::-webkit-details-marker {
