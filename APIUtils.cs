@@ -5,6 +5,7 @@ using Htmx;
 
 using konym.live.Pages;
 using konym.live.Pages.Zones;
+using konym.live.Components;
 using konym.live.Components.Zones;
 
 namespace konym.live;
@@ -174,6 +175,56 @@ public static class APIUtils
 	empty:
 		TopicHtml = (MarkupString) string.Empty;
 		return false;
+	}
+
+	public static dynamic ChangelogSearchHandler(HttpContext ctx)
+	{
+		if (!ctx.Request.Query.TryGetValue("q", out var Query))
+			return Results.BadRequest();
+
+		List<DateOnly> SearchResults;
+
+		if (DateOnly.TryParse(Query, out var TryDate))
+		{
+			// search by date
+
+			SearchResults = [..
+				Globals.ChangelogCache
+				.AsParallel()
+				.Where(kvp => kvp.Key == TryDate)
+				.Select(kvp => kvp.Key)
+			];
+		}
+		else
+		{
+			// else, search by content? (this might be too slow)
+
+			SearchResults = [..
+				Globals.ChangelogCache
+				.AsParallel()
+				.Where(kvp => kvp.Value.Value.Contains(Query, StringComparison.OrdinalIgnoreCase))
+				.Select(kvp => kvp.Key)
+			];
+		}
+
+		if (SearchResults.Count > 1)
+			SearchResults.Sort((s1, s2) => s2.CompareTo(s1));
+
+		if (SearchResults.Count == 1 && Globals.ChangelogCache.TryGetValue(SearchResults[0], out var HTMLContent))
+			return new RazorComponentResult<Changelog>(new { Date = SearchResults[0], HTMLContent });
+		else
+			return new RazorComponentResult<ChangelogSearchResults>(new { SearchResults });
+	}
+
+	public static dynamic GetChangelogHandler(HttpContext ctx)
+	{
+		if (!ctx.TryGetDate(out var Date))
+			return Results.BadRequest();
+
+		if (!Globals.ChangelogCache.TryGetValue(Date, out var HTMLContent))
+			return Results.NotFound();
+
+		return new RazorComponentResult<Changelog>(new { Date, HTMLContent });
 	}
 }
 

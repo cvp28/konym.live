@@ -5,6 +5,7 @@ using konym.live.Pages;
 using konym.live.Pages.Testing;
 using konym.live.Pages.Zones;
 using konym.live.textmode.UI;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Options;
@@ -129,6 +130,9 @@ app.MapGet("/frag/get-server-power-info", (HttpContext ctx) =>
 });
 
 app.MapGet("/frag/mp3-list", (HttpContext ctx) => new RazorComponentResult<Mp3List>());
+
+app.MapGet("frag/changelog-search", APIUtils.ChangelogSearchHandler);
+app.MapGet("frag/get-changelog", APIUtils.GetChangelogHandler);
 
 app.MapGet("/frag/xterm-core", () => Results.Redirect("https://esm.unpkg.com/@xterm/xterm/lib/xterm.js"));
 app.MapGet("/frag/xterm-fit-addon", () => Results.Redirect("https://esm.unpkg.com/@xterm/addon-fit/lib/addon-fit.js"));
@@ -275,6 +279,7 @@ app.MapGet("/zones/technology", APIUtils.ZoneHandler<TechnologyZonePage>);
 app.MapGet("/zones/life", APIUtils.ZoneHandler<LifeZonePage>);
 app.MapGet("/zones/cars-and-bikes", APIUtils.ZoneHandler<CarsAndBikesZonePage>);
 
+Globals.BuildChangelogCache();
 Globals.Mp3FilesRefreshTask = Task.Run(Globals.Mp3FilesRefreshProc);
 Globals.BadAppleLoadTask = Task.Run(Globals.LoadBadAppleFrames);
 
@@ -313,6 +318,8 @@ static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers,
 
 public static class Globals
 {
+	public static readonly Dictionary<DateOnly, MarkupString> ChangelogCache = [];
+
 	public static string RandomMp3File => Mp3Files.ElementAt(new Random().Next(Mp3Files.Count));
 	public static ConcurrentBag<string> Mp3Files = [""];
 	public static Task Mp3FilesRefreshTask;
@@ -320,7 +327,22 @@ public static class Globals
 	public static string[] BadAppleFrames;
 	public static Task BadAppleLoadTask;
 
-	public static ConcurrentDictionary<string, Hv2App> Hv2Instances = [];
+	public static readonly ConcurrentDictionary<string, Hv2App> Hv2Instances = [];
+
+	public static void BuildChangelogCache()
+	{
+		var ChangelogDir = @".\ServerContent\updates";
+		var ChangelogFiles = Directory.GetFiles(ChangelogDir, "*.md", SearchOption.TopDirectoryOnly);
+
+		foreach (var file in ChangelogFiles)
+		{
+			var Filename = Path.GetFileNameWithoutExtension(file);
+			var Content = File.ReadAllText(file);
+
+			if (DateOnly.TryParse(Filename, out var date))
+				ChangelogCache[date] = new(Markdig.Markdown.ToHtml(Content));
+		}
+	}
 
 	public static async void Mp3FilesRefreshProc()
 	{

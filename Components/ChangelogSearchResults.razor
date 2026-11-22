@@ -1,0 +1,21 @@
+﻿
+<div class="flex-vert flex-align-center">
+@foreach (var Result in SearchResults)
+{
+	<button
+			class="site-theme-border"
+			style="background: none; color: burlywood; width: min-content; white-space: nowrap;"
+
+			hx-get="/frag/get-changelog?date=@Result.ToString("yyyy-MM-dd")"
+			hx-target="#news-view"
+			hx-swap="innerHTML"
+	>
+		@Result.ToString("yyyy-MM-dd")
+	</button>
+}
+</div>
+
+@code {
+	[Parameter]
+	public List<DateOnly> SearchResults { get; set; }
+}

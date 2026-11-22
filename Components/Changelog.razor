@@ -1,0 +1,19 @@
+﻿<div class="news-item flex-vert">
+    <span class="news-item-date" align="center">@Date.ToString("MM-dd-yyyy")</span>
+    @HTMLContent
+
+    <!--
+        • konym.live now features Discord music integration for the Mp3Player via a custom Chromium-compatible extension. See <a hx-ignore href="/zones/technology?date=11-16-2026">this</a> blog post for details :)<br />
+        • Mp3Player list UI now has appropriately-sized bounding boxes for file and folder elements.<br />
+        • Response handling for Zones has been fixed. Linking directly to articles now works consistently again!<br />
+        • Cars and Bikes Zone is now implemented.
+    -->
+</div>
+
+@code {
+    [Parameter]
+    public DateOnly Date { get; set; }
+
+    [Parameter]
+    public MarkupString HTMLContent { get; set; }
+}

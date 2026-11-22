@@ -1,4 +1,6 @@
-﻿<div id="content" class="flex-vert flex-align-center" align="center">
+﻿@using konym.live.Components
+
+<div id="content" class="flex-vert flex-align-center" align="center">
     <link rel="stylesheet" href="/style/index.css"/>
 
     <div class="fill-width flex-vert flex-align-center">
@@ -49,213 +51,34 @@
         </a>
     </div>
 
-    <div id="content-news" class="flex-vert" onwheel="event.preventDefault(); this.scrollBy(0, Math.sign(event.deltaY) * this.clientHeight)">
-        <!--<span class="news-item-date news-item-pinned" style="color: lightgreen;" align="center">Pinned</span>-->
+    <div id="content-news" class="flex-vert flex-align-center flex-justify-center site-theme-border">
+        <div id="news-search" class="flex-horiz">
+            <input  
+                    id="news-search-field"
+                    class="site-theme-border"
 
-        <div class="news-item">
-            <span class="news-item-date" align="center">11-18-2026</span>
-            <p class="news-item-content" align="left">
-                • konym.live now features Discord music integration for the Mp3Player via a custom Chromium-compatible extension. See <a hx-ignore href="/zones/technology?date=11-16-2026">this</a> blog post for details :)<br />
-                • Mp3Player list UI now has appropriately-sized bounding boxes for file and folder elements.<br />
-                • Response handling for Zones has been fixed. Linking directly to articles now works consistently again!<br />
-                • Cars and Bikes Zone is now implemented.
-            </p>
+                    type="search"
+                    name="q"
+                    placeholder="Search Changelog..."
+                    autocomplete="off"
+
+                    hx-get="/frag/changelog-search"
+                    hx-trigger="input changed delay:250ms, keyup[key=='Enter']"
+                    hx-target="#news-view"
+                    hx-swap="innerHTML"
+                    
+            />
+
+            <button hx-get="/frag/changelog-search?q=" hx-target="#news-view" hx-swap="innerHTML" onclick="document.getElementById('news-search-field').value = '';">Get List</button>
         </div>
 
-        <div class="news-item">
-            <span class="news-item-date" align="center">10-10-2026</span>
-            <p class="news-item-content" align="left">
-                • Mp3Player list UI has been slightly modified to accomodate a forthcoming playlist feature. Stay tuned.<br />
-                • Chat app now attempts to use hardware-accelerated rendering, if available. Say goodbye to laggy chat window dragging! (depending on your setup :p)<br />
-                • Optimized memory usage and tweaked loading behavior of the chat app.<br />
-                • Updated site to HTMX 4.<br />
-                • All common CSS (body, fonts, etc.) now consolidate into a single site.min.css to minimize network traffic.<br />
-                • Updated many pages to use separate JS and CSS files instead of inline logic/styling. Hopefully the DOM is a little more readable now.<br />
-                • Added AI Usage disclaimer page.
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">09-09-2026</span>
-            <p class="news-item-content" align="left">
-                • Updated the chat window from its generic 'programmer' interface to something actually styled.<br/>
-                • Fixed glitch for chat window and mp3 player where the element would reset itself to the top-left of the screen whenever double clicking.<br />
-                • Song selector list in the mp3 player now has a folder view to select songs. It also no longer refreshes the list every time it is opened, so expanded/collapsed folders will now persist.
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">08-15-2026</span>
-            <p class="news-item-content" align="left">
-                • Due to space and layout constraints, the Mp3 Player and newly added Chat window are now available via right-clicking anywhere on the page (navbar and content area).<br />
-                • The little-known textmode.konym.live SSH application has been ported to work over websockets! The site uses xterm.js to interact with the backend app instance.<br />
-                • The textmode.konym.live app features an ASCII rendition of Bad Apple, skippable by pressing <span style="color: cadetblue">[ENTER]</span> as well as an anonymous chat room. Type <span style="color:cadetblue">/help</span> for a basic list of commands.
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">07-26-2026</span>
-            <p class="news-item-content" align="left">
-                • The song selector list for the Mp3 Player is now functional! (and a tiny bit styled as well)<br />
-                • Moved "Pinned" around in the changelog.
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">07-25-2026</span>
-            <p class="news-item-content" align="left">
-                • Adjusted site layout - userbadge is now in the bottom-left again. I am indecisive.<br />
-                • A WIP Mp3 Player is now included! This will eventually be styled to fit the site theme. Somehow.<br />
-                • The Home page changelog has been made into a compact and scrollable view where every scroll event scrolls by a whole entry.<br />
-                • Fixed "konym.live" Home page link in the Navbar<br />
-                • Zone Article buttons now correctly cause page loading transitions to occur.
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">07-20-2026</span>
-            <p class="news-item-content" align="left">
-                • Adjusted site layout - userbadge is now in the top-left and has its own "root box".<br />
-                • Modified HTMX request handling - loading spinner has been updated and content box now uses a "blink" effect to transition between pages.<br />
-                • Page content is now referred to by an id instead of a class. This took embarrasingly long for me to change.<br />
-                • "About" page text has been clamped to a smaller width.
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">07-18-2026</span>
-            <p class="news-item-content" align="left">
-                • Updated primary site font to Segoe UI, the UI font of Windows 7.<br />
-                • Added a site-wide loading spinner for when HTMX requests are in flight. It's the Windows Aero spinner, because of course it is.<br />
-                • Replaced YouTube song embeds in the Navbar with standard HTML audio embeds drawing from a slightly expanded collection of songs than before.<br />
-                &emsp;• Will likely create my own custom audio player to better fit the available space in the Navbar. Or I'll download one from the internet. Stay tuned.
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">07-16-2026</span>
-
-            <p class="news-item-content" align="left">
-                • A close buddy of mine recently put his own WIP website out on the internet. Go visit!<br />
-                • 👉 <a hx-ignore style="text-decoration: none; color:#d3c5fb" target="_blank" href="https://nexb13.github.io/netstation/index.htm"><span style="font-family: FutureEarth">Net Station</span></a> 👈
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">06-23-2026</span>
-            <p class="news-item-content" align="left">
-                • Thanks to <span style="color:cadetblue">Kernel32.GetSystemPowerStatus()</span>, the About Page now contains information about the power status of my web server, which is a laptop.<br />
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">05-13-2026</span>
-            <p class="news-item-content" align="left">
-                • A modded version of the flash game "Shadez 2" now lives here!<br />
-                • See <a hx-ignore style="color:lightgreen" href="/zones/technology?date=05-13-2026">this</a> blog post for more details :)
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">03-23-2026</span>
-            <p class="news-item-content" align="left">
-                • The updates section on the Home page (this) is now arranged vertically. Will likely redesign in the future.<br />
-                • The entire site now runs on HTMX! Goodbye, page refreshes!<br />
-                • See <a hx-ignore style="color:lightgreen" href="/zones/technology?date=03-23-2026">this</a> blog post for more details :)
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">03-14-2026</span>
-            <p class="news-item-content" align="left">
-                • Zones are laid out a bit better now and have been reworked on the backend to support directly accessing articles via a permanent link.<br />
-                • See <a hx-ignore style="color:lightgreen" href="/zones/technology?date=03-14-2026">this</a> blog post for more details :)
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">03-08-2026</span>
-            <p class="news-item-content" align="left">
-                • Technology Zone is now functional! (but very basic)<br />
-                • It uses htmx to request HTML fragments much like a single-page web app, except this one doesn't eat up all your RAM.<br />
-                • Design is likely to change <b>quite a bit</b> in future updates. The current design is mainly a proof-of-concept.<br />
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">03-01-2026</span>
-            <p class="news-item-content" align="left">
-                • Added background images to buttons on Zones page.<br />
-                • Technology Zone has an interim layout that I'm not final on. I feel like I'm leaning into the blue/yellow theme too heavily.<br />
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">02-28-2026</span>
-            <p class="news-item-content" align="left">
-                • Added Zones page and removed Download page.<br />
-                • Zones page has a nice glowing expanding button sort of design that I think looks rather nice.<br />
-                • It's currently broken up into 3 sections: Tech, Life, and Cars & Bikes. The removed Download page will likely make a return as an integration into the Technology zone.<br />
-                • Home page now has an actual introduction. My brain is finally un-fried.<br />
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">02-27-2026</span>
-            <p class="news-item-content" align="left">
-                • Nothing much besides messing around with the site button in the navbar.<br />
-                • Font sizing in the Active User badge now scales with viewport size (this made me want to die).<br />
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">02-26-2026</span>
-            <p class="news-item-content" align="left">
-                • Updated font sizes throughout the site to respond to container width using inline-size and cqi units. This should make the UI <b>much</b> more responsive across different viewport sizes.<br />
-                • More linear-gradient's because they're pretty.<br />
-                • Expanded use of the 3dthirteen pixel font because I think it looks cool<br />
-                • Links page link added, but will currently resolve to a new "Nothing yet!" page.<br />
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">02-25-2026</span>
-            <p class="news-item-content" align="left">
-                • More UI updates and styling. Added "I Made This" joke page (lol).<br />
-                • Replaced TARDIS image with my Discord pfp.<br />
-                • Active User count should now be more honest.<br />
-                • Active User badge is in a better place by default and returns to its docked location on a double-click.<br />
-                • My page now has a button! (and a clipboard button that auto-copies the embed html)<br />
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">02-24-2026</span>
-            <p class="news-item-content" align="left">
-                • Reworked UI to use flex boxes behind the scenes.<br />
-                • Active User badge is now implemented!<br />
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">02-23-2026</span>
-            <p class="news-item-content" align="left">
-                • Brought 14 y/o me's website into modern times.<br />
-                • Updated website to run on ASP.NET/Blazor.<br />
-                • Updated About page to reflect current motivations.<br />
-                • Changed logo to match my classic TARDIS favicon (temporarily).<br />
-                • Google Earth shortcut because why not: <a target="_blank" href="https://earth.google.com/web/@@37.23767918,-94.5159901,701.21142548a,22281905.34762383d,35y,15.03696165h,1.7282735t,360r/data=CgRCAggBOgMKATBCAggASg0I____________ARAA?authuser=0">🌎</a>.<br />
-            </p>
-        </div>
-
-        <div class="news-item">
-            <span class="news-item-date" align="center">01-23-2017</span>
-            <p class="news-item-content" align="left">
-                • First documented change.<br />
-                • Added noticeable line to the bottom of page labels.<br />
-                • Added "Page Specifications" to About page.<br />
-                • Added "Extra Information" column to software table on Downloads page.<br />
-            </p>
+        <div id="news-view" class="flex-vert">
+            <!--<span class="news-item-date news-item-pinned" style="color: lightgreen;" align="center">Pinned</span>-->
+            
+            @{
+                var Latest = Globals.ChangelogCache.Last();
+                <Changelog Date="Latest.Key" HTMLContent="Latest.Value"/>
+            }
         </div>
     </div>
 </div>
