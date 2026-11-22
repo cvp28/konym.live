@@ -361,8 +361,16 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/ServerContent/unpublished-topics/*
 
+/ServerContent/*
 /wwwroot/mp3
 
 /yt-dlp.exe
+/ServerContent/life-topics/24_04-21-2026.md
+/ServerContent/life-topics/America's 250th_07-04-2026.md
+/ServerContent/life-topics/Chillin_03-15-2026.md
+/ServerContent/life-topics/tbd_03-09-2026.md
+/ServerContent/tech-topics/Bigger Updates!_03-23-2026.md
+/ServerContent/tech-topics/Introduction_03-08-2026.md
+/ServerContent/tech-topics/Shadez 2_05-13-2026.md
+/ServerContent/tech-topics/Updates!_03-14-2026.md
