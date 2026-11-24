@@ -1,0 +1,42 @@
+﻿@{
+	var ActiveUsers = Globals.ActiveUsers.Where(user => user.Value.Active);
+	var InactiveUsers = Globals.ActiveUsers.Where(user => !user.Value.Active);
+
+	<table>
+		<thead>
+			<tr>
+				<th>Status</th>
+				<th>Country</th>
+				<th>URL</th>
+				<th>Last Ping</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			@foreach (var user in ActiveUsers)
+			{
+				if (!user.Value.Valid)
+					continue;
+
+				<tr>
+					<td style="color: springgreen;">ACTIVE</td>
+					<td>@user.Value.Country</td>
+					<td>@user.Value.Where</td>
+					<td>@user.Value.LastPing.ToShortDateString() @user.Value.LastPing.ToShortTimeString()</td>
+				</tr>
+			}
+			@foreach (var user in InactiveUsers)
+			{
+				if (!user.Value.Valid)
+					continue;
+
+				<tr>
+					<td style="color: red;">INACTIVE</td>
+					<td>@user.Value.Country</td>
+					<td>@user.Value.Where</td>
+					<td>@user.Value.LastPing.ToShortDateString() @user.Value.LastPing.ToShortTimeString()</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}

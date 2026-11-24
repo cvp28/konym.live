@@ -1,0 +1,20 @@
+﻿@{
+	var TotalVisits = Globals.ActiveUsers.Count(user => user.Value.Valid);
+	var ActiveUsers = Globals.ActiveUsers.Where(user => user.Value.Active);
+	var str = TotalVisits == 1 ? "visit" : "visits";
+}
+
+<div id="active-users"
+     class="flex-horiz flex-align-center flex-justify-center"
+     
+     hx-indicator="this"
+     hx-post="/frag/active-users"
+     hx-trigger="every 5s [document.hidden === false]"
+     hx-target="this"
+     hx-swap="outerHTML">
+
+    <a id="spinning-globe-link" draggable="false" href="/active-users"><img id="spinning-globe" draggable="false" src="/images/rotating_globe.gif" /></a>
+    <span draggable="false">@TotalVisits @str,<br />@ActiveUsers.Count() online now!</span>
+
+</div>
+

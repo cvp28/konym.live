@@ -138,7 +138,9 @@ internal class ChatLayer : Layer
 				}
 
 				// this is really secure nigga
-				if (Pass != "all4114all")
+				string secret_password = File.ReadAllText(@".\ServerContent\kick_pass.txt");
+
+				if (Pass != secret_password)
 				{
 					tbChat.WriteLine($"Incorrect password", Color24.Red, Color24.Black);
 					break;
@@ -166,11 +168,7 @@ internal class ChatLayer : Layer
 		{
 			tbActiveUsers.Write($"{inst.Key} ", Color24.Yellow, Color24.Black);
 			tbActiveUsers.Write($"{(inst.Value.Layers["Main"].Active ? $"in BadApple" : $"in Chat ")}", Color24.Green, Color24.Black);
-
-			if (inst.Value == Instance)
-				tbActiveUsers.WriteLine("(you)");
-			else
-				tbActiveUsers.WriteLine();
+			tbActiveUsers.WriteLine(inst.Value == Instance ? "(you)" : "");
 		}
 	}
 

@@ -8,21 +8,18 @@ using konym.live.textmode.UI;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Options;
 using Spectre.Console;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using Utf8StringInterpolation;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
-builder.Services.AddSingleton<ConcurrentBag<User>>();
 builder.Services.AddWebOptimizer(pipeline =>
 {
 	pipeline.AddCssBundle("/style/site.min.css",
@@ -72,9 +69,9 @@ app.MapGet("/bedroom-light-off", async (HttpContext ctx) =>
 	await client.SendAsync(bytes, bytes.Length);
 });
 
-app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList) =>
+app.MapPost("/frag/active-users", (HttpContext ctx) =>
 {
-	PingActive(ctx.Connection.RemoteIpAddress, ctx.Request.Headers, UserList);
+	Globals.PingActive(ctx.Connection.RemoteIpAddress, ctx.Request.Headers);
 
 	AnsiConsole.Clear();
 	AnsiConsole.WriteLine("/frag/active-users\n");
@@ -82,34 +79,36 @@ app.MapPost("/frag/active-users", (HttpContext ctx, ConcurrentBag<User> UserList
 	var table = new Table();
 	table.AddColumns("Status", "IP Address", "Country", "URL", "Last Ping", "Valid");
 
-	var TotalVisits = UserList.Count(user => user.Valid);
-	var ActiveUsers = UserList.Where(user => user.Active);
-	var InactiveUsers = UserList.Where(user => !user.Active);
+	var TotalVisits = Globals.ActiveUsers.Count(user => user.Value.Valid);
+	var ActiveUsers = Globals.ActiveUsers.Where(user => user.Value.Active);
+	var InactiveUsers = Globals.ActiveUsers.Where(user => !user.Value.Active);
 
 	foreach (var user in ActiveUsers)
 		table.AddRow(
 			"[green]ACTIVE[/]",
-			user.IP.ToString(),
-			user.Country,
-			user.Where,
-			$"{user.LastPing:d} {user.LastPing:t}",
-			user.Valid.ToString()
+			user.Key.ToString(),
+			user.Value.Country,
+			user.Value.Where,
+			$"{user.Value.LastPing:d} {user.Value.LastPing:t}",
+			user.Value.Valid.ToString()
 		);
 
 	foreach (var user in InactiveUsers)
 		table.AddRow(
 			"[red]INACTIVE[/]",
-			user.IP.ToString(),
-			user.Country,
-			user.Where,
-			$"{user.LastPing:d} {user.LastPing:t}",
-			user.Valid.ToString()
+			user.Key.ToString(),
+			user.Value.Country,
+			user.Value.Where,
+			$"{user.Value.LastPing:d} {user.Value.LastPing:t}",
+			user.Value.Valid.ToString()
 		);
 
 	AnsiConsole.Write(table);
 
-	return Results.Text($"""<span id="badge">🌎 {(TotalVisits > 1 ? $"{TotalVisits} visits" : $"{TotalVisits} visit")}, {ActiveUsers.Count()} online now!</span>""", "text/html", Encoding.UTF8);
+	return new RazorComponentResult<ActiveUsersBadge>();
 });
+
+app.MapGet("/frag/active-users-table", (HttpContext ctx) => new RazorComponentResult<ActiveUsersTable>());
 
 app.MapGet("/frag/random-song", () => Globals.RandomMp3File);
 
@@ -269,6 +268,7 @@ app.MapGet("/about", APIUtils.DefaultPartialOrFullHandler<AboutPage>);
 app.MapGet("/zones", APIUtils.DefaultPartialOrFullHandler<ZonesPage>);
 app.MapGet("/i-made-this", APIUtils.DefaultPartialOrFullHandler<IMadeThisPage>);
 app.MapGet("/shadez-2-full", APIUtils.DefaultPartialOrFullHandler<Shadez2FullPage>);
+app.MapGet("/active-users", APIUtils.DefaultPartialOrFullHandler<ActiveUsersPage>);
 
 // Hidden pages
 app.MapGet("/test-page", APIUtils.DefaultPartialOrFullHandler<TestPage>);
@@ -285,40 +285,11 @@ Globals.BadAppleLoadTask = Task.Run(Globals.LoadBadAppleFrames);
 
 app.Run();
 
-static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers, ConcurrentBag<User> ActiveUsers)
-{
-	var TryUser = ActiveUsers.FirstOrDefault(user => user.IP.Equals(RemoteAddress));
-
-	if (TryUser is null)
-	{
-		using var client = new HttpClient();
-		string Country = Headers.TryGetValue("CF-IPCountry", out var country) ? country : "<unknown>";
-
-		// Add new visit to the tracker
-		var visit = new User
-		{
-			IP = RemoteAddress,
-			Country = Country,
-			Where = Headers.TryGetValue("Hx-Current-Url", out var where) ? where : "/",
-			LastPing = DateTime.Now,
-
-			// Don't consider this visit valid until the user has pinged at least once, to avoid counting bots and scrapers
-			Valid = false
-		};
-
-		ActiveUsers.Add(visit);
-	}
-	else
-	{
-		TryUser.LastPing = DateTime.Now;
-		TryUser.Valid = true;
-		TryUser.Where = Headers.TryGetValue("Hx-Current-Url", out var where) ? where : "/";
-	}
-}
-
 public static class Globals
 {
 	public static readonly Dictionary<DateOnly, MarkupString> ChangelogCache = [];
+
+	public static readonly ConcurrentDictionary<IPAddress, User> ActiveUsers = [];
 
 	public static string RandomMp3File => Mp3Files.ElementAt(new Random().Next(Mp3Files.Count));
 	public static ConcurrentBag<string> Mp3Files = [""];
@@ -328,6 +299,36 @@ public static class Globals
 	public static Task BadAppleLoadTask;
 
 	public static readonly ConcurrentDictionary<string, Hv2App> Hv2Instances = [];
+
+	public static async void PingActive(IPAddress RemoteAddress, IHeaderDictionary Headers)
+	{
+		var TryUser = ActiveUsers.TryGetValue(RemoteAddress, out var user) ? user : null;
+
+		if (TryUser is null)
+		{
+			string Country = Headers.TryGetValue("CF-IPCountry", out var country) ? country : "<unknown>";
+
+			// Add new visit to the tracker
+			var visit = new User
+			{
+				IP = RemoteAddress,
+				Country = Country,
+				Where = Headers.TryGetValue("Hx-Current-Url", out var where) ? where : "/",
+				LastPing = DateTime.Now,
+
+				// Don't consider this visit valid until the user has pinged at least once, to avoid counting bots and scrapers
+				Valid = false
+			};
+
+			ActiveUsers[RemoteAddress] = visit;
+		}
+		else
+		{
+			TryUser.LastPing = DateTime.Now;
+			TryUser.Valid = true;
+			TryUser.Where = Headers.TryGetValue("Hx-Current-Url", out var where) ? where : "/";
+		}
+	}
 
 	public static void BuildChangelogCache()
 	{

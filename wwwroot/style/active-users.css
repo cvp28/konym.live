@@ -1,0 +1,37 @@
+#bg-image {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	filter: blur(5px) brightness(50%);
+	z-index: -1;
+}
+
+#content {
+	position: relative;
+	height: stretch;
+	width: stretch;
+
+	/* Just some bullshit to make the image appear idfk */
+	backdrop-filter: brightness(0%);
+}
+
+table {
+	width: 95%;
+	font-family: Consolas;
+}
+
+tr {
+	text-align: center;
+}
+
+th {
+	font-size: 1.5cqi;
+	color: springgreen;
+}
+
+td {
+	font-size: 1.5cqi;
+	padding: 5px 20px 5px 20px;
+}

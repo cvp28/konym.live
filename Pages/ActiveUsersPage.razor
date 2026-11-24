@@ -1,0 +1,24 @@
+﻿@using konym.live.Components
+
+<div id="content" class="flex-vert">
+	<img id="bg-image" src="/images/earth-high-res-2.avif"/>
+
+	<link rel="stylesheet" type="text/css" href="/style/active-users.css" />
+
+	<div class="fill-width flex-vert flex-align-center">
+        <span style="font-family: '3dthirteen'; font-size: 5cqi;">Active Users</span>
+        <hr class="fill-width" />
+    </div>
+
+	<div 
+		id="active-users-content"
+		class="flex-vert flex-align-center flex-justify-center"
+
+		hx-get="/frag/active-users-table"
+		hx-target="this"
+		hx-swap="innerHTML"
+		hx-trigger="every 5s [document.hidden === false]"
+	>
+		<ActiveUsersTable />
+	</div>
+</div>
